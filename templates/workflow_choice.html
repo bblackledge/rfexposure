@@ -1,0 +1,70 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-slate-50 px-4 py-12 sm:px-6 lg:px-8 font-sans">
+    <div class="mx-auto max-w-5xl">
+        <header class="mb-5 text-center">
+            <div class="flex justify-center mb-3">
+                <img src="{% static 'assets/img/log-base-transparent.png' %}"
+                     class="h-16 w-auto sm:h-20"
+                     alt="RF Exposure Logo">
+            </div>
+            <h1 class="text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
+                Choose How to Start
+            </h1>
+            <p class="mx-auto mt-3 max-w-2xl text-lg leading-relaxed text-slate-600">
+                Registered users can sign in to save their individual RF exposure worksheet calculations.
+                Only need a single RF exposure report? Start with a basic report.
+            </p>
+            <div class="mt-4 flex justify-center">
+                <a href="{% url 'instructions' %}"
+                   class="inline-flex items-center justify-center rounded-full bg-[#972025] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#7f1b21] hover:shadow-md">
+                    Return to Main Application Page
+                </a>
+            </div>
+        </header>
+
+        <main class="grid gap-6 md:grid-cols-2">
+            <section class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/60">
+                <div class="mb-5 inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#15446A]">
+                    Account Dashboard
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900">Save Reports to Account Dashboard</h2>
+                <p class="mt-3 text-slate-600 leading-relaxed">
+                    Sign in to your account to save RF Exposure reports and return to them later from your account dashboard.
+                </p>
+                <div class="mt-6">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'compute:dashboard' %}"
+                           class="inline-flex w-full items-center justify-center rounded-2xl bg-[#15446A] px-5 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-[#103553]">
+                            Go to Dashboard
+                        </a>
+                    {% else %}
+                        <a href="{% url 'appauth:account_login' %}?next={% url 'compute:dashboard' %}"
+                           class="inline-flex w-full items-center justify-center rounded-2xl bg-[#15446A] px-5 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-[#103553]">
+                            Sign In to Account Dashboard
+                        </a>
+                    {% endif %}
+                </div>
+            </section>
+
+            <section class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/60">
+                <div class="mb-5 inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-600">
+                    Basic Report Generation
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900">Generate Report and Download</h2>
+                <p class="mt-3 text-slate-600 leading-relaxed">
+                    Launch the RF Exposure Calculation Worksheet to generate and download a basic exposure report that is not saved.
+                </p>
+                <div class="mt-6">
+                    <a href="{% url 'compute:compute-form' %}"
+                       class="inline-flex w-full items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-blue-600">
+                        Create Basic Report
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+{% endblock %}

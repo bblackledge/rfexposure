@@ -1,0 +1,724 @@
+{% extends "layouts/base.html" %}
+{% block page-meta %}{% endblock %}
+{% block title %}RF Exposure Calculation Worksheet{% endblock %}
+
+{% load static %}
+
+{% block page-header-scripts %}
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+{% endblock %}
+
+{% block page-styles %}
+
+    <style>
+
+        body {
+            background-color: #dbe1fc;
+        }
+
+        .centered-box {
+            width: 84%;
+            max-width: 1200px;
+            margin: 30px auto 0;
+        }
+
+        .internal-box {
+            width: 100%;
+            max-width: 1200px; /* Optional: Max width to limit the box size */
+            margin: 20px auto 0;
+            border: 1px solid #bbbcbd;
+            background-color: #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px 20px 30px;
+        }
+
+        .internal-title {
+            color: #285B93;
+            font-size: 28px;
+            font-weight: 600;
+            padding: 0 0 10px 12px;
+        }
+
+        .internal-subtitle {
+            color: #285B93;
+            font-size: 25px;
+            font-weight: 600;
+            padding: 0 0 10px 12px;
+        }
+
+        .small-description {
+            color: #285B93;
+        }
+
+        .copy {
+            font-size: 1.1em;
+        }
+
+        .label {
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .custom-input {
+            margin-bottom: .25rem;
+        }
+
+        .custom-input input {
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        /* Hide spinner in Chrome, Safari, Edge, and Opera */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Hide spinner in Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .info-icon {
+            display: inline-block;
+            border: solid 1px #fff;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: #007BFF;
+            color: #fff;
+            text-align: center;
+            line-height: 18px;
+            cursor: pointer;
+            font-family: serif;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .error {
+            color: red;
+        }
+
+        #loading-indicator {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            text-align: center;
+            padding-top: 50vh;
+            z-index: 9999;
+        }
+
+        #loading-indicator.htmx-request {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-input, .custom-select {
+            height: calc(1.5em + .75rem + 2px); /* Match the height */
+            font-size: 1rem;
+            line-height: 1.5;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Styling for select elements to add custom arrow */
+        .custom-select {
+            -webkit-appearance: none; /* Remove default styling in Webkit browsers */
+            -moz-appearance: none; /* Remove default styling in Firefox */
+            appearance: none; /* Remove default styling */
+            background-image: url('data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiB2aWV3Qm94PSIwIDAgMTAwMCAxMDAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik01MDAgNTAwbC00MDAtNDAwbC00MDAgNDAwbDE1MDAgMTQwbDI1MCAyNTBsMjUwIDI1MGMxMjUgMTI1IDMxMCAxMjUgMzk1IDBsNDAwLTQwMGMxMjUtMTI1IDEyNS0zMTAgMC0zOTV6Ii8+PC9zdmc+');
+            background-repeat: no-repeat;
+            background-position: right .75rem center; /* Position the custom arrow */
+            background-size: 1rem; /* Size the custom arrow */
+        }
+
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+
+    <form hx-post="{% url 'compute:compute-form' %}"
+          hx-indicator="#loading-indicator">
+
+        {% csrf_token %}
+
+        <div class="container">
+            <div class="centered-box">
+
+                <div class="internal-box">
+
+                    <div class="row internal-title" style="padding-bottom: 0">
+                        <div class="col-md-9" style="vertical-align: middle">
+                            <img src="{% static 'assets/img/logo_icon.png' %}" alt="worksheet icon" height="110px"
+                                 width="110px" style="margin-left: -24px">
+                            RF Exposure Report Calculation Worksheet
+                        </div>
+                        <div class="col-md-3 text-end" style="margin-top:30px">
+                            <a href="{% url 'instructions' %}">
+                                <button type="button" class="btn btn-primary">Return to Instructions</button>
+                            </a>
+                        </div>
+
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12 copy">
+                            Complete each of the required fields (fields appended with an asterisk) and select the
+                            <strong>Generate RF Exposure Report</strong> button to complete the report analysis.
+                            To review supplemental information for any form field, click the
+                            information icon <span class="info-icon">i</span> located next to
+                            the field's name. All fields whose field labels are followed by an asterisk "*" are
+                            required for report generation.
+                        </div>
+                    </div>
+                </div>
+
+
+
+                {% if form.errors %}
+                    <br/>
+                    <!-- Error messages -->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 mb-30">
+                            <div class="alert alert-danger"
+                                 style="color: red; background-color: #fce8eb; border: solid 2px red">
+                                <p>
+                                    <span style="color: red"><b>Please correct the following error(s):</b></span>
+                                </p>
+                                {{ form.non_field_errors }}
+                                {% for field in form %}
+                                    <div>{% if field.errors %}
+                                        <i class="fa fa-exclamation-triangle"
+                                           aria-hidden="true"></i>
+                                        &nbsp; <strong>{{ field.label }}</strong>:
+                                        {{ field.errors|striptags }}{% endif %}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Error messaging -->
+                {% endif %}
+
+
+
+
+                <div class="internal-box" style="padding-bottom: 15px">
+
+                    <div class="row internal-subtitle">
+                        <div class="col-md-12" style="vertical-align: middle">
+                            <img src="{% static 'assets/img/report_icon.png' %}" alt="worksheet icon" height="80px"
+                                 width="80px" style="margin-left: -14px">
+                            Report Personalization
+                        </div>
+                    </div>
+
+                    <div class="copy" style="margin-top:5px; margin-bottom: 40px">
+                        To personalize the pages of your report, enter a short <strong>Report Description</strong>
+                        less than 128 characters in length.
+                        Next, enter your <strong>Name</strong> (First and Last Name),
+                        as well as your amateur radio <strong>Call Sign</strong> and <strong>Email Address</strong>.
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="id_title" class="form-label label">Report Description* <span class="info-icon"
+                                                                                                     data-bs-toggle="modal"
+                                                                                                     data-bs-target="#infoModal"
+                                                                                                     data-help-key="report_description">i</span></label>
+                            <div class="custom-input">
+                                {{ form.report_description }}
+                            </div>
+                            {% if form.report_description.errors %}
+                                <div class="error">
+                                    {% for error in form.report_description.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <small class="form-text small-description">Short <u>Report Description</u> less than 128
+                                characters long</small>
+                        </div>
+
+
+                        <div class="row mb-3" style="margin-top: 40px">
+                            <div class="col-md-4">
+                                <label for="id_operator_name" class="form-label label">First and Last Name* <span
+                                        class="info-icon"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#infoModal"
+                                        data-help-key="operator_name">i</span></label>
+                                <div class="custom-input">
+                                    {{ form.operator_name }}
+                                </div>
+                                {% if form.operator_name.errors %}
+                                    <div class="error">
+                                        {% for error in form.operator_name.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text small-description"><u>First and Last Name</u> </small>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="id_antenna_title" class="form-label label">Call Sign* <span
+                                        class="info-icon"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#infoModal"
+                                        data-help-key="call_sign">i</span></label>
+                                <div class="custom-input">
+                                    {{ form.call_sign }}
+                                </div>
+                                {% if form.call_sign.errors %}
+                                    <div class="error">
+                                        {% for error in form.call_sign.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text small-description">Amateur Radio <u>Call Sign</u></small>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="id_antenna_title" class="form-label label">Email Address* <span
+                                        class="info-icon"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#infoModal"
+                                        data-help-key="email">i</span></label>
+                                <div class="custom-input">
+                                    {{ form.email }}
+                                </div>
+                                {% if form.email.errors %}
+                                    <div class="error">
+                                        {% for error in form.email.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text small-description"><u>Email Address</u>
+                                </small>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="internal-box">
+                    <!-- Computation Title and Description-->
+                    <div class="row internal-subtitle">
+                        <div class="col-md-12" style="vertical-align: middle">
+                            <img src="{% static 'assets/img/freq_icon.png' %}" alt="worksheet icon" height="80px"
+                                 width="80px" style="margin-left: -14px">
+                            Single or Multi-Band Exposure Analysis
+                        </div>
+                    </div>
+                    <div class="copy" style="margin-top:5px; margin-bottom: 40px">
+                        Select the <strong>Multi-Band Group</strong> you wish to generate an RF Exposure Report.
+                        Exposure limits for each U.S. Amateur Radio Band within the selected multi-band group's
+                        frequency range are automatically generated for the report.
+                        Next, select the band's <strong>Frequency Position</strong> to use in computing exposure limits.
+                        By default, the <strong>Highest</strong> frequency value within each band is used in computing
+                        exposure limits. Finally, if you wish to analyze only a single frequency, and not an entire
+                        set of frequencies in a multi-band group, simply enter the desired frequency
+                        (<strong>MHz</strong>)
+                        into the <strong>Single Frequency Exposure Analysis</strong> form field. All prior Band Plan and
+                        Frequency
+                        Position entries will be ignored and a single frequency exposure report will be generated.
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <label for="{{ form.frequency_mode.id_for_label }}" class="form-label label">Multi-Band
+                                Group* <span
+                                        class="info-icon" data-bs-toggle="modal" data-bs-target="#infoModal"
+                                        data-help-key="frequency_mode">i</span></label>
+                            <div class="custom-input">
+                                {{ form.frequency_mode }}
+                            </div>
+                            {% if form.frequency_mode.errors %}
+                                <div class="error">{{ form.frequency_mode.errors }}</div>
+                            {% endif %}
+                            <small class="form-text small-description">Exposure Report Generated With This <u>Multi-Band
+                                Group</u></small>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="{{ form.frequency_position.id_for_label }}" class="form-label label">Frequency
+                                Position in Band* <span
+                                        class="info-icon" data-bs-toggle="modal" data-bs-target="#infoModal"
+                                        data-help-key="frequency_position">i</span></label>
+                            <div class="custom-input">
+                                {{ form.frequency_position }}
+                            </div>
+                            {% if form.frequency_position.errors %}
+                                <div class="error">{{ form.frequency_position.errors }}</div>
+                            {% endif %}
+                            <small class="form-text small-description">Band's <u>Frequency Position</u> to Use For
+                                Computations</small>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="id_receive_time" class="form-label label">Single Frequency Exposure Analysis
+                                <span
+                                        class="info-icon" data-bs-toggle="modal" data-bs-target="#infoModal"
+                                        data-help-key="frequency">i</span></label>
+                            <div class="custom-input">
+                                {{ form.frequency }}
+                            </div>
+                            <small class='form-text small-description'>Valid U.S. Amateur Band <u>Frequency</u>
+                                (MHz)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="internal-box">
+                    <!-- Computation Title and Description-->
+
+                    <div class="row internal-subtitle">
+                        <div class="col-md-12" style="vertical-align: middle">
+                            <img src="{% static 'assets/img/tower_icon.png' %}" alt="worksheet icon" height="80px"
+                                 width="80px" style="margin-left: -14px">
+                            Antenna Specifications
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="copy" style="margin-top:5px; margin-bottom: 40px">
+                            To further personalize the pages of your report, enter a short
+                            <strong>Antenna Description</strong> less than 128 characters in length.
+                            Next, enter the <strong>Antenna Gain</strong> in dBi, as well as check the
+                            <strong>Use Ground Reflection Effects</strong> checkbox field if you wish to generate a
+                            worst case set of exposure calculations integrating ground reflection effects
+                            into your analysis.
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="id_antenna_title" class="form-label label">Antenna Description* <span
+                                    class="info-icon"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#infoModal"
+                                    data-help-key="antenna_description">i</span></label>
+                            <div class="custom-input">
+                                {{ form.antenna_description }}
+                            </div>
+                            {% if form.antenna_description.errors %}
+                                <div class="error">
+                                    {% for error in form.antenna_description.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <small class="form-text small-description">A short <u>Antenna Description</u> less than 128
+                                characters in length</small>
+                        </div>
+                    </div>
+
+                    <br/>
+
+                    <div class="row mb-3" style="margin-top: 0px">
+                        <div class="col-md-6">
+                            <label for="id_antenna_gain" class="form-label label">Antenna Gain* <span class="info-icon"
+                                                                                                      data-bs-toggle="modal"
+                                                                                                      data-bs-target="#infoModal"
+                                                                                                      data-help-key="antenna_gain">i</span></label>
+                            <div class="custom-input">
+                                {{ form.antenna_gain }}
+                            </div>
+                            {% if form.antenna_gain.errors %}
+                                <div class="error">
+                                    {% for error in form.antenna_gain.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <small class='form-text small-description'><u>Antenna Gain</u> in dBi</small>
+                        </div>
+
+                        <div class="col-md-6 form-check">
+                            <label class="form-check-label label" for="id_ground_reference" style="margin: 0 0 15px 0;">Ground
+                                Reflection <span class="info-icon" data-bs-toggle="modal" data-bs-target="#infoModal"
+                                                 data-help-key="ground_reflection">i</span></label>
+                            <div style="margin-left: 0; margin-bottom: 15px;">
+                                {{ form.ground_reflection }}&nbsp;&nbsp;Use Ground Reflection Effects in Analysis
+                            </div>
+                            <small class='form-text small-description'>Factor worst case <u>Ground Reflection
+                                Effects</u> into Exposure Calculations?</small>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+                <div class="internal-box">
+                    <!-- Computation Title and Description-->
+                    <div class="row internal-subtitle">
+                        <div class="col-md-12" style="vertical-align: middle">
+                            <img src="{% static 'assets/img/transmission_icon.png' %}" alt="worksheet icon"
+                                 height="80px" width="80px" style="margin-left: -14px">
+                            Transmission Specifications
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="copy" style="margin-top:-5px; margin-bottom: 40px">
+                            Transmission Specifications fields include:
+                            <strong>Effective Power</strong>, <strong>Mode Duty Factor</strong>, as well as
+                            <strong>Transmit</strong> and <strong>Receive</strong> times. Each field is crucial
+                            for accurate RF exposure calculations. Unfortunately, the definition and meaning of these
+                            fields are
+                            often misunderstood by many, leading to incorrect exposure analyses when completed with
+                            invalid
+                            values and assumptions. Take your time to complete each field accurately.
+                            If you're unsure about any field's purpose or meaning, simply click the information icon
+                            next to it for a detailed explanation.
+                            Your careful and precise input will significantly improve the accuracy of your
+                            RF exposure assessment.
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-6">
+
+                        <div class="col-md-3">
+                            <label for="id_effective_power" class="form-label label">Transmitter Power* <span
+                                    class="info-icon"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#infoModal"
+                                    data-help-key="effective_power">i</span></label>
+                            <div class="custom-input">
+                                {{ form.effective_power }}
+                            </div>
+                            {% if form.effective_power.errors %}
+                                <div class="error">
+                                    {% for error in form.effective_power.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <small class="form-text small-description"><u>PEP</u> Input to the
+                                Antenna (watts)</small>
+                        </div>
+
+                        <div class="col-md-5">
+                            {#                            <div class="form-group">#}
+                            <label for="{{ form.duty_factor.id_for_label }}" class="form-label label">Mode Duty Factor*
+                                <span
+                                        class="info-icon" data-bs-toggle="modal" data-bs-target="#infoModal"
+                                        data-help-key="duty_factor">i</span></label>
+                            <div class="custom-input">
+                                {{ form.duty_factor }}
+                            </div>
+                            {% if form.duty_factor.errors %}
+                                <div class="error">{{ form.duty_factor.errors }}</div>
+                            {% endif %}
+                            {#                            </div>#}
+                            <small class="form-text small-description"><u>Percentage of Power</u> During
+                                Transmission</small>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label for="id_transmit_times" class="form-label label">Transmit Time* <span
+                                    class="info-icon"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#infoModal"
+                                    data-help-key="transmit_time">i</span></label>
+                            <div class="custom-input">
+                                {{ form.transmit_time }}
+                            </div>
+                            <small class="form-text small-description"><u>Time</u> (minutes)</small>
+
+                        </div>
+                        <div class="col-md-2">
+                            <label for="id_receive_time" class="form-label label">Receive Time* <span class="info-icon"
+                                                                                                      data-bs-toggle="modal"
+                                                                                                      data-bs-target="#infoModal"
+                                                                                                      data-help-key="receive_time">i</span></label>
+                            <div class="custom-input">
+                                {{ form.receive_time }}
+                            </div>
+                            <small class="form-text small-description"><u>Time</u> (minutes)</small>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="internal-box" style="padding-bottom: 40px; margin-bottom: 90px">
+                    <!-- Computation Title and Description-->
+                    <div class="row internal-subtitle">
+                        <div class="col-md-12" style="vertical-align: middle">
+                            <img src="{% static 'assets/img/generate_icon.png' %}" alt="worksheet icon" height="80px"
+                                 width="80px" style="margin-left: -14px">
+                            Generate RF Exposure Report
+                        </div>
+                    </div>
+
+                    <div class="copy" style="margin-top:5px; margin-bottom: 40px">
+                        Select the <strong>Include Calculations Pages in Report</strong> checkbox if you wish to include
+                        calculation pages for each multi-band group frequency. Finally, click the
+                        <strong>Generate RF Exposure Report</strong> to begin generating your personalized report.
+                    </div>
+
+                    <div class="row mb-6">
+
+                        <div class="col-md-6">
+                            <label class="form-check-label label" for="id_include_calculations"
+                                   style="margin: 0 0 15px 0;">
+                                Report Calculations&nbsp;<span class="info-icon" data-bs-toggle="modal"
+                                                               data-bs-target="#infoModal"
+                                                               data-help-key="include_calculations">i</span></label>
+                            <div style="margin-left: 0; margin-bottom: 10px;">
+                                {{ form.include_calculations }}&nbsp;&nbsp;Include Calculation Pages in Report
+                            </div>
+                            <small class="form-text small-description">Include a <u>Calculation Page</u> for Each
+                                Multi-Band Group Frequency Computed
+                            </small>
+                        </div>
+
+                        <div class="col-md-6 text-center" style="margin-top: 20px">
+                            <button type="submit" class="btn btn-success" style="background-color: green">
+                                <span style="font-size: 1.2em; font-weight: 550; color:white">Generate RF Exposure Report</span>
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+
+    <div id="form-result"></div>
+
+    <div id="loading-indicator" class="htmx-indicator">
+        <div class="spinner-border text-light" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="mt-2">Generating report, please wait...</div>
+    </div>
+
+
+    </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="max-width: 50%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="infoModalLabel">Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Help text will be inserted here by JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+<!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+{% block page-footer-scripts %}
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.0/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <script src="{% static 'assets/js/helpcompute.js' %}"></script>
+
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const infoModal = document.getElementById('infoModal');
+            const infoIcons = document.querySelectorAll('.info-icon');
+
+            infoIcons.forEach(function (icon) {
+                icon.addEventListener('click', function () {
+                    const helpKey = this.getAttribute('data-help-key');
+                    const helpCopy = helpTexts[helpKey];
+                    const title = helpTitle[helpKey];
+                    console.log(helpKey, helpCopy, title);
+                    infoModal.querySelector('.modal-title').innerHTML = title;
+                    infoModal.querySelector('.modal-body').innerHTML = helpCopy;
+                });
+            });
+        });
+
+       document.body.addEventListener('htmx:afterOnLoad', function (event) {
+            try {
+                const response = event.detail.xhr.response;
+                console.log('HTMX Response:', response); // Log response for debugging
+                const jsonResponse = JSON.parse(response);
+                if (jsonResponse.redirect) {
+                    console.log('Redirecting to:', jsonResponse.redirect);
+                    window.location.href = jsonResponse.redirect;
+                }
+            } catch (e) {
+                console.error('Error handling HTMX response:', e); // Log any parsing or runtime errors
+                window.scrollTo({top: 0, behavior: "smooth"});
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            if (document.querySelector(".errorlist")) {  // Check if there are form errors
+                window.scrollTo({top: 0, behavior: "smooth"});
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const modeDutyFactor = document.querySelector('#id_duty_factor');
+            const transmitTime = document.querySelector('#id_transmit_time');
+            const receiveTime = document.querySelector('#id_receive_time');
+
+            // Add event listener to the Mode Duty Factor dropdown
+            modeDutyFactor.addEventListener('change', () => {
+                const selectedIndex = modeDutyFactor.selectedIndex;
+                console.log(selectedIndex);
+
+                if (selectedIndex === 7) {
+                    transmitTime.value = .25;
+                    receiveTime.value = .25;
+                } else if (selectedIndex === 6) {
+                    transmitTime.value = .125;
+                    receiveTime.value = .125;
+                } else {
+                    transmitTime.value = .125;
+                    receiveTime.value = .125;
+                }
+            });
+        });
+
+
+    </script>
+{% endblock %}
+<!-- END PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->

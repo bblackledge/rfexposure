@@ -1,0 +1,255 @@
+{% extends "layouts/base-gridbg.html" %}
+{% block page-meta %}{% endblock %}
+{% block title %}Cover Page{% endblock %}
+
+{% load static %}
+
+{% block page-styles %}
+    <style>
+    body {
+        background-color: #fff;
+    }
+        .logo {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 0;
+        }
+
+        .cover_subtitle {
+            font-size: 14px;
+            font-weight: normal;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .disclaimer {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 80px;
+            text-align: center;
+            border: 0;
+        }
+
+        li, .body_copy {
+            font-size: 12px;
+            font-weight: normal;
+            margin-top: 0;
+            margin-bottom: 5px;
+            border: 0;
+        }
+
+        .title-antenna {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        .outer {
+            border: 1px solid black;
+            padding: 0;
+            margin: 0 50px 0 50px;
+        }
+
+        .arp_email {
+            font-size: 12px;
+            font-weight: normal;
+            margin-top: 4px;
+            text-align: center;
+            border: 0;
+        }
+
+        footer {
+            border: 0;
+            border-collapse: collapse;
+            border: none;
+            outline: none;
+        }
+
+        .moreinfo {
+            font-size: 12px;
+            font-weight: normal;
+            margin-top: 4px;
+            text-align: center;
+            border: 0;
+        }
+
+        @page cover_template {
+            size: letter portrait;
+            @frame header_frame {
+                /* Static Frame */
+                -pdf-frame-content: cover_header_content;
+                left: 30pt;
+                width: 552pt;
+                top: 30pt;
+                height: 30pt;
+                {#-pdf-frame-border: 0;#}
+            }
+            @frame content_frame {
+                /* Content Frame */
+                left: 30pt;
+                width: 552pt;
+                top: 70pt;
+                height: 652pt;
+                {#-pdf-frame-border: 0;#}
+            }
+            @frame footer_frame {
+                /* Another static Frame */
+                -pdf-frame-content: cover_footer_content;
+                left: 30pt;
+                width: 552pt;
+                top: 730pt;
+                height: 30pt;
+                {#-pdf-frame-border: 1;#}
+            }
+        }
+
+        @page body_template {
+            size: letter portrait;
+            @frame header_frame {
+                /* Static Frame */
+                -pdf-frame-content: body_header_content;
+                left: 30pt;
+                width: 552pt;
+                top: 30pt;
+                height: 30pt;
+             {#-pdf-frame-border: 0;#}
+            }
+            @frame content_frame {
+                /* Content Frame */
+                left: 30pt;
+                width: 552pt;
+                top: 70pt;
+                height: 652pt;
+             {#-pdf-frame-border: 0;#}
+            }
+            @frame footer_frame {
+                /* Another static Frame */
+                -pdf-frame-content: body_footer_content;
+                left: 30pt;
+                width: 552pt;
+                top: 730pt;
+                height: 30pt;
+                text-align: center;
+                {#-pdf-frame-border: 0;#}
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="logo">
+        <img src="{% static 'assets/img/log-base-transparent.png' %}" alt="logo" height="50" width="50"/>
+    </div>
+
+    <div class="title" style="text-align: center;">
+        U.S. Amateur Radio RF Exposure Report
+    </div>
+
+    <br/>
+    <div class="title-antenna">{{ data.report_description }}</div>
+    <div class="title-antenna">{{ data.antenna_description }}</div>
+
+    <br/> <br/>
+
+    <div class="cover_subtitle" style="text-align: center;">
+        {{ data.operator_name }}, {{ data.call_sign }}
+    </div>
+    <div class="cover_subtitle" style="text-align: center;">
+        {{ data.email }}
+    </div>
+
+    <br/>
+
+    <div class="cover_subtitle" style="text-align: center;">
+        Created: {% now "F j, Y" %}
+    </div>
+
+
+    <div class="outer">
+
+        <div class="disclaimer">Disclaimer</div>
+
+        <div class="body_copy">The information and calculations provided by this report are intended for
+            general
+            informational purposes only. While we strive to ensure the accuracy and reliability of the
+            content,
+            we make no representations or warranties of any kind, express or implied, about the
+            completeness,
+            accuracy, reliability, suitability, or availability with respect to the report or the
+            information,
+            calculations, or related graphics contained in the report for any purpose. Any reliance you
+            place
+            on such information is therefore strictly at your own risk.
+        </div>
+        <div class="body_copy">
+            By using this report, you agree that:
+        </div>
+        <ol type="1">
+            <li>
+                <strong>Use at Your Own Risk:</strong> The calculations and information provided by this
+                report are to
+                be used at your own risk. The results and outputs generated are for informational purposes
+                only and should not be used as a sole source of guidance for any decisions or actions
+                related
+                to RF exposure or any other matters.
+            </li>
+            <li>
+                <strong>No Liability:</strong> The publishers of this report are not
+                liable
+                for any loss or damage, including without limitation, indirect or consequential loss or
+                damage,
+                or any loss or damage whatsoever arising from loss of data or profits arising out of, or in
+                connection with, the use of this report.
+            </li>
+            <li>
+                <strong>Professional Advice:</strong> This report does not replace professional advice.
+                Users are encouraged to consult with a qualified professional for specific advice tailored
+                to
+                their situation.
+            </li>
+        </ol>
+
+        <div class="body_copy">
+            By using this report, you acknowledge that you have read, understood, and agree to be bound by
+            this
+            disclaimer. If you do not agree with any part of this disclaimer, please do not use this report.
+        </div>
+    </div>
+
+
+    <br />
+
+    <div class="arp_email" style="margin-bottom: 0">
+        <div>
+{#            <img src="{% static 'assets/img/arp.jpg' %}'" alt="logo" height="20" width="130"/>#}
+            <img src="https://app.rfexposure.com/static/assets/img/arp.png" alt="logo" height="20" width="130"/>
+
+            <br /><br />
+            This report is compliments of Amateur Radio Press, a "publishing imprint" of PC Information Group, Inc.
+             <br /><br />
+{#             <img src="{% static 'assets/img/ewlogofilled.jpg' %}" alt="logopc" height="25" width="90"/>#}
+             <img src="https://app.rfexposure.com/static/assets/img/ewlogofilled.png" alt="logo" height="25" width="90"/>
+            <br />
+        </div>
+    </div>
+
+    <br />
+
+    <div class="moreinfo">
+        For more information, visit <strong>amateurradiopress.com</strong> and <strong>pcig.net</strong>
+    </div>
+
+
+
+    <pdf:nexttemplate name="body_template"/>
+
+{% endblock %}
+

@@ -1,0 +1,118 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
+
+    <header class="max-w-5xl mx-auto mb-6">
+        <div class="flex flex-col md:flex-row items-center gap-6 bg-white/80 p-6 rounded-3xl shadow-2xl border border-slate-200">
+            <div class="flex-shrink-0 flex items-center justify-center">
+                <img src="{% static 'assets/img/log-base-transparent.png' %}" class="h-20 w-auto md:h-24 lg:h-28"
+                     alt="RF Exposure Logo">
+            </div>
+            <div class="flex-1 text-center md:text-left">
+                <h1 class="text-4xl font-black text-slate-900 tracking-tight sm:text-5xl mb-3">
+                    RF Exposure Report Generator
+                </h1>
+                <p class="text-lg text-slate-600 leading-relaxed">
+                    Create RF Exposure reports using our enhanced calculation and report generation engine.
+                </p>
+                <div class="mt-6 flex justify-center">
+                    <a href="{% url 'instructions' %}"
+                       class="inline-flex items-center justify-center gap-2 rounded-full bg-[#972025] px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-[#7f1b21] hover:shadow-md">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 11l9-8 9 8"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10v10h14V10"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20v-6h6v6"/>
+                        </svg>
+                        Return to Home Page
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto bg-white rounded-[2rem] shadow-2xl shadow-slate-200/60 overflow-hidden border border-slate-100"
+          style="box-shadow: 0 35px 65px -15px rgba(15, 23, 42, 0.4);">
+        <div class="flex flex-col md:flex-row">
+
+            <section class="md:w-5/12 bg-slate-50/50 p-8 lg:p-12 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-slate-100">
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                    <img src="{% static 'assets/img/usermanual.png' %}"
+                         class="relative w-48 rounded-lg shadow-2xl transition-transform duration-500 group-hover:scale-[1.02]"
+                         alt="User Manual Cover">
+{#                    <span class="absolute top-2 right-2 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">#}
+{#                        v1.00B#}
+{#                    </span>#}
+                </div>
+
+                <div class="mt-8 text-center">
+{#                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 text-center">Documentation</h3>#}
+                    <a href="{% static 'docs/RFExposure_User_Manual.pdf' %}"
+                       class="inline-flex items-center px-6 py-3 rounded-xl bg-white border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 hover:border-blue-300 hover:text-blue-600 transition-all shadow-sm"
+                       download>
+                        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Download PDF Manual
+                    </a>
+                </div>
+            </section>
+
+            <section class="md:w-7/12 p-8 lg:p-12">
+                <h2 class="text-2xl font-bold text-slate-800 mb-8">What's New in This Version</h2>
+
+                <div class="space-y-8">
+                    <div class="flex items-start group">
+                        <div class="flex-shrink-0 w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        </div>
+                        <div class="ml-5">
+                            <h4 class="text-lg font-bold text-slate-900">Personalized Reporting</h4>
+                            <p class="text-slate-500 text-sm leading-relaxed mt-1">Define report titles, operator details (Call Sign, Email), antenna descriptions, etc. for distinctive cover pages.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start group">
+                        <div class="flex-shrink-0 w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        </div>
+                        <div class="ml-5">
+                            <h4 class="text-lg font-bold text-slate-900">Multi-Band Calculations</h4>
+                            <p class="text-slate-500 text-sm leading-relaxed mt-1">Analyze single frequencies or run comprehensive exposure calculations across full MF-HF or VHF-UHF bands.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start group">
+                        <div class="flex-shrink-0 w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <div class="ml-5">
+                            <h4 class="text-lg font-bold text-slate-900">Digital Mode Precision</h4>
+                            <p class="text-slate-500 text-sm leading-relaxed mt-1">Updated duty factors for FT8/4/2 and advanced sub-minute power calculation algorithms.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer class="bg-slate-50 px-8 py-6 flex flex-col sm:flex-row justify-end items-center border-t border-slate-100 gap-4">
+            <div class="w-full flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                {% if user.is_authenticated %}
+                    <span class="inline-flex items-center gap-2 self-start rounded-full bg-emerald-50 px-3 py-1 mt-3 sm:mt-4 text-[14px] font-bold text-emerald-700">
+                        <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                        Signed in as {{ user.email|default:user.username|lower }}
+                    </span>
+                {% else %}
+                    <span></span>
+                {% endif %}
+                <a href="{% url 'workflow-choice' %}"
+                   class="w-full sm:w-auto px-8 py-3.5 bg-[#15446A] text-white font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#103553] transition-all shadow-sm sm:self-end">
+                    <span>Generate RF Exposure Report</span>
+                </a>
+            </div>
+        </footer>
+    </main>
+</div>
+{% endblock %}

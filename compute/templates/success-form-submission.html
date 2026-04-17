@@ -1,0 +1,93 @@
+{% extends "layouts/base.html" %}
+{% block page-meta %}{% endblock %}
+{% block title %}RF Exposure Report Generation Success{% endblock %}
+
+{% load static %}
+
+{% block page-styles %}
+<style>
+    body {
+        background: #f3f4f6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#f3f4f6] px-4 py-10 text-slate-900">
+    <div class="mx-auto w-full max-w-6xl">
+        <div class="overflow-hidden rounded-2xl bg-white shadow-[0_10px_30px_rgba(15,23,42,0.08)] ring-1 ring-slate-100">
+            <div class="px-6 py-8 sm:px-10 sm:py-10 lg:px-14 lg:py-12">
+                <div class="mx-auto max-w-3xl text-center">
+                    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-600/10 text-blue-700 shadow-sm">
+                        <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+                            <circle cx="12" cy="12" r="9" stroke-opacity="0.15" />
+                        </svg>
+                    </div>
+
+                    <h1 class="mt-6 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                        RF Exposure Report Generation Successful!
+                    </h1>
+                    <p class="mt-4 text-base leading-7 text-slate-600 sm:text-lg">
+                        Your RF Exposure report includes a Cover page, a Summary page, and optional Calculation pages.
+                        If calculations were selected, those pages are appended to the final PDF.
+                    </p>
+                </div>
+
+                <div class="mt-10 grid gap-5 md:grid-cols-3">
+                    <div class="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+                        <div class="mx-auto aspect-[4/5] w-full max-w-[220px] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                            <img src="{% static 'assets/img/cover_page.png' %}" alt="Report Cover" class="h-full w-full object-cover">
+                        </div>
+                        <div class="mt-4 text-center">
+                            <div class="text-sm font-semibold text-slate-900">Report Cover</div>
+                            <div class="mt-1 text-sm text-slate-500">1 Page</div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+                        <div class="mx-auto aspect-[4/5] w-full max-w-[220px] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                            <img src="{% static 'assets/img/summary_page.png' %}" alt="Report Summary" class="h-full w-full object-cover">
+                        </div>
+                        <div class="mt-4 text-center">
+                            <div class="text-sm font-semibold text-slate-900">Report Summary</div>
+                            <div class="mt-1 text-sm text-slate-500">1 Page</div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+                        <div class="mx-auto aspect-[4/5] w-full max-w-[220px] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                            <img src="{% static 'assets/img/computations_page.png' %}" alt="Report Calculations" class="h-full w-full object-cover">
+                        </div>
+                        <div class="mt-4 text-center">
+                            <div class="text-sm font-semibold text-slate-900">Report Calculations</div>
+                            <div class="mt-1 text-sm text-slate-500">1-11 Pages</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-10 text-center">
+                    {% if pdf_filename and pdf_filename|length > 0 %}
+                        <a id="download-pdf" href="{% url 'compute:serve-pdf' pdf_filename %}" download="{{ pdf_filename }}"
+                           class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/20">
+                            Download RF Exposure Report PDF
+                        </a>
+                    {% else %}
+                        <p class="text-sm font-medium text-rose-600">The PDF file is not available for download at this moment.</p>
+                    {% endif %}
+                </div>
+
+                <div class="mt-12 border-t border-slate-200 pt-6">
+                    <div class="flex justify-center">
+                        <a href="{% url 'instructions' %}"
+                           class="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/15 transition hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-500/20">
+                            <span aria-hidden="true">←</span>
+                            <span>Return to Main Application Page</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

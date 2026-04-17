@@ -1,0 +1,207 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="min-h-screen bg-slate-50 p-6 md:p-8">
+        <div class="max-w-6xl mx-auto w-full">
+            <header class="mb-8 rounded-[1.5rem] bg-white border border-slate-100 shadow-lg shadow-slate-200/40 px-4 py-4 md:px-5 md:py-5 space-y-3">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <img src="{% static 'assets/img/log-base-transparent.png' %}"
+                                 alt="RF Exposure Logo"
+                                 class="h-10 w-auto sm:h-11">
+                            <h1 class="text-4xl font-bold text-slate-900">RFExposure</h1>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-900">Calculation Worksheet Report History Dashboard</h3>
+                        <p class="text-s text-slate-500 mt-1 mb-4">Each panel displayed below is a saved RF Exposure Calculation Worksheet.</p>
+                    </div>
+                    {% if user.is_authenticated %}
+                        <span class="inline-flex items-center gap-2 self-start sm:self-start mt-3 rounded-full bg-emerald-50 px-3 py-1 text-[14px] font-bold text-emerald-700">
+                            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                            Signed in as {{ user.email|default:user.username|lower }}
+                        </span>
+                    {% endif %}
+                </div>
+
+                <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <a href="{% url 'compute:compute-form' %}"
+                       class="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#15446A] text-white font-semibold shadow-sm hover:bg-[#008000] transition-all"
+                       style="padding: 0.55rem 1rem;">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M5 12h14"/>
+                        </svg>
+                        Create New RF Exposure Report
+                    </a>
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center md:justify-end md:ml-auto">
+                        <a href="{% url 'instructions' %}"
+                           class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white text-slate-700 font-semibold shadow-sm hover:bg-slate-50 hover:border-slate-300 transition-all"
+                           style="padding: 0.55rem 1rem;">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l-7-7 7-7"/>
+                            </svg>
+                            Return to Previous
+                        </a>
+                        <a href="{% url 'appauth:account_logout' %}"
+                           class="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 text-white font-semibold shadow-sm hover:bg-red-600 transition-all"
+                           style="padding: 0.55rem 1rem;">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 17l5-5-5-5"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H3"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 7V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2"/>
+                            </svg>
+                            Log Out
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="space-y-6">
+                {% for report in reports %}
+                    <article class="w-full bg-white rounded-[1.5rem] shadow-lg shadow-slate-200/40 border border-slate-100 p-4 md:p-5">
+                        <div class="flex flex-col xl:flex-row xl:items-start gap-4">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex flex-wrap items-center gap-2 mb-3">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-[#15446A] bg-blue-50 px-2.5 py-1 rounded-full">
+                                        {{ report.created_at|date:"M d, Y" }}
+                                    </span>
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full">
+                                        {{ report.created_at|date:"g:i A" }}
+                                    </span>
+                                </div>
+
+                                <div class="space-y-3">
+                                    <div class="border-b border-slate-100 pb-3">
+                                        <p class="text-slate-900 font-extrabold break-words text-[22px] leading-tight">
+                                            {{ report.parameters.report_description|default:"-" }}
+                                        </p>
+                                    </div>
+                                    <div class="border-b border-slate-100 pb-3">
+                                        <p class="text-[13px] font-bold uppercase tracking-wider text-[#15446A] mb-1 underline">Antenna Description</p>
+                                        <p class="text-slate-900 font-medium break-words text-[16px] leading-snug">{{ report.parameters.antenna_description|default:"-" }}</p>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                        <div>
+                                            <p class="text-[13px] font-bold uppercase tracking-wider text-[#15446A] mb-1 underline">Multi-Band Group</p>
+                                            <p class="text-slate-900 font-medium text-[16px] leading-snug">
+                                                {% if report.parameters.frequency_mode == 0 or report.parameters.frequency_mode == '0' %}
+                                                    MF/HF (1.8 MHz - 54.0 MHz)
+                                                {% elif report.parameters.frequency_mode == 1 or report.parameters.frequency_mode == '1' %}
+                                                    VHF/UHF (50.0 MHz - 1,300 MHz)
+                                                {% else %}
+                                                    -
+                                            {% endif %}
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p class="text-[13px] font-bold uppercase tracking-wider text-[#15446A] mb-1 underline">Frequency Position</p>
+                                            <p class="text-slate-900 font-medium text-[16px] leading-snug">
+                                                {% if report.parameters.frequency_position == 0 or report.parameters.frequency_position == '0' %}
+                                                    Lowest Frequency in Band
+                                                {% elif report.parameters.frequency_position == 1 or report.parameters.frequency_position == '1' %}
+                                                    Center Frequency in Band
+                                                {% elif report.parameters.frequency_position == 2 or report.parameters.frequency_position == '2' %}
+                                                    Highest Frequency in Band
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p class="text-[13px] font-bold uppercase tracking-wider text-[#15446A] mb-1 underline">Frequency</p>
+                                            <p class="text-slate-900 font-medium text-[16px] leading-snug">
+                                                {% if report.parameters.frequency %}
+                                                    {{ report.parameters.frequency }} MHz
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3" style="margin-top: 25px;">
+                                        <div>
+                                            <p class="text-[13px] font-bold uppercase tracking-wider text-[#15446A] mb-1 underline">Ground Reflection</p>
+                                            <p class="text-slate-900 font-medium text-[16px] leading-snug">
+                                                {% if report.parameters.ground_reflection %}
+                                                    Enabled
+                                                {% else %}
+                                                    Disabled
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[13px] font-bold uppercase tracking-wider text-[#15446A] mb-1 underline">Include Calculations</p>
+                                            <p class="text-slate-900 font-medium text-[16px] leading-snug">
+                                                {% if report.parameters.include_calculations %}
+                                                    Yes
+                                                {% else %}
+                                                    No
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <aside class="xl:w-60 flex-shrink-0">
+                                <div class="flex flex-col gap-2">
+                                    <a href="{% url 'compute:rerun_report' report.id %}"
+                                       class="w-full text-center bg-[#15446A] text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-[#000000] transition-colors inline-flex items-center justify-center gap-2 px-4">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v10m0 0l-4-4m4 4l4-4"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+                                        </svg>
+                                        Download Exposure Report
+                                    </a>
+                                    <a href="{% url 'compute:duplicate_report' report.id %}"
+                                       class="w-full text-center border border-[#15446A]/20 text-[#15446A] bg-blue-50 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-100 transition-colors inline-flex items-center justify-center gap-2 px-4">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9h10v10H9z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15H4a1 1 0 01-1-1V4a1 1 0 011-1h10a1 1 0 011 1v1"/>
+                                        </svg>
+                                        Duplicate Report
+                                    </a>
+                                    <form method="post" action="{% url 'compute:delete_report' report.id %}"
+                                          onsubmit="return confirm('Delete this report from your history?');">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                                class="w-full text-center border border-red-200 text-red-700 py-2.5 rounded-xl text-sm font-semibold bg-red-50 hover:bg-red-100 transition-colors inline-flex items-center justify-center gap-2 px-4">
+                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7H5"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11v6m4-6v6"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 7l1 13h10l1-13"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7V4h6v3"/>
+                                            </svg>
+                                            Delete Report
+                                        </button>
+                                    </form>
+                                </div>
+                            </aside>
+                        </div>
+                    </article>
+                {% empty %}
+                    <div class="py-20 bg-white rounded-[2rem] border-2 border-dashed border-slate-200 text-center">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 text-slate-400 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">No reports yet</h3>
+                        <p class="text-slate-500 mb-6">Create your first RF exposure calculation to see it here.</p>
+                        <a href="{% url 'compute:compute-form' %}"
+                           class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors">
+                            Create My First Report
+                        </a>
+                    </div>
+                {% endfor %}
+            </main>
+
+        </div>
+    </div>
+{% endblock %}

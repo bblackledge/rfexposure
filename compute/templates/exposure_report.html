@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<!-- https://stackoverflow.com/questions/76268635/how-to-install-pip-install-pycairo-getting-error -->
+<html lang="en">
+
+{% load humanize %}
+
+{% load custom_tags %}
+{% load custom_filters %}
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 0;
+        }
+        .subtitle {
+            font-size: 16px;
+            font-style: italic;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .parameters {
+            font-family: sans-serif;
+            font-size: 15px;
+            font-weight: normal;
+            height: 30px;
+            border: 0;
+            width: 45%;
+        }
+        .center_parameters {
+            font-family: sans-serif;
+            font-size: 15px;
+            font-weight: normal;
+            height: 30px;
+            border: 0;
+            width: 10%;
+        }
+        .header {
+            font-family: sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1pt solid black; /* Solid border for all cells */
+            margin-bottom: 20px;
+            background-color: #ddd;
+            padding: 0;
+        }
+        {#.parameters {#}
+        {#    width: 33%;#}
+        {# } #}
+        th {
+            height: 100px; /* Adjust height as needed */
+            border: 1pt solid black; /* Solid border for all cells */
+        }
+        td {
+            height: 34px; /* Adjust height as needed */
+            vertical-align: middle; /* Vertical alignment */
+            padding-top: 5px;
+            padding-right: 10px;
+            border: 1pt solid black; /* Solid border for all cells */
+        }
+        .td-center {
+            height: 34px; /* Adjust height as needed */
+            vertical-align: middle; /* Vertical alignment */
+            padding-top: 5px;
+            padding-right: 0;
+            border: 1pt solid black; /* Solid border for all cells */
+            text-align: center;
+        }
+        .row-odd {
+            font-family: sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: right;
+            vert-align: middle;
+            height: 40px; /* Adjust height as needed */
+            vertical-align: middle; /* Vertical alignment */
+            padding-top: 5px;
+            padding-right: 10px;
+            border: 1pt solid black; /* Solid border for all cells */
+            color: white;
+            background-color: #285b93;
+        }
+        .row-even {
+            font-family: sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: right;
+            vert-align: middle;
+            height: 40px; /* Adjust height as needed */
+            vertical-align: middle; /* Vertical alignment */
+            border: 1pt solid black; /* Solid border for all cells */
+            padding-top: 5px;
+            padding-right: 10px;
+            background-color: #ffffff;
+        }
+        .solid-box {
+            border-collapse: collapse;
+            border: 1pt solid black; /* Change 1pt to 1pt if you want a thicker border */
+            display: inline-block; /* Optional: Adjust display property as needed */
+        }
+        .header_content {
+            font-family: sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+            font-style: italic;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="body_header_content" class="header_content">U.S. Amateur Radio RF Exposure Report - Version 0.25A</div>
+
+    <div id="body_footer_content" class="header_content">Page <pdf:pagenumber> of <pdf:pagecount></div>
+
+    <div class="title">{{ param_dict.report_description }}</div>
+    <div class="subtitle">{{ param_dict.antenna_description }}</div>
+
+    <br/>
+
+    <table width="95%">
+        <tr>
+            <td class="parameters">Transmission Watts: <strong>{{ param_dict.effective_power }}</strong></td>
+            <td class="center_parameters">&nbsp;</td>
+            <td class="parameters">Mode Duty Factor (%):
+                <strong>
+{#                {{ param_dict.duty_factor|mul:"100" }}#}
+                {% with multiplied_value=param_dict.duty_factor|mul:"100" %}
+                    {{ multiplied_value }}
+                {% endwith %}
+                </strong>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="parameters">Multi-Band Group:
+                <strong>{{ param_dict.frequency_mode|int_to_band_plan }}</strong>
+            </td>
+            <td class="center_parameters">&nbsp;</td>
+            <td class="parameters">Band Frequency Position:
+                <strong> {{ param_dict.frequency_position|int_to_frequency_position }}</strong>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="parameters">Gain (dBi): <strong>{{ param_dict.antenna_gain }}</strong></td>
+            <td class="center_parameters">&nbsp;</td>
+            <td class="parameters">Ground Reflection: <strong>{{ param_dict.ground_reflection }}</strong></td>
+        </tr>
+        <tr>
+            <td class="parameters">Transmit Time (min.): <strong>{{ param_dict.transmit_time|floatformat:3 }}</strong></td>
+            <td class="center_parameters">&nbsp;</td>
+            <td class="parameters">Receive Time (min.): <strong>{{ param_dict.receive_time|floatformat:3 }}</strong></td>
+        </tr>
+    </table>
+
+    <br/><br/>
+
+    <table class="solid-box">
+        <thead>
+        <tr>
+            <th class="header">U.S. Amateur<br />Radio<br />Band<br/>(meters)</th>
+            <th class="header">Band<br/>Transmission Frequency<br/>(MHz)</th>
+            <th class="header">Controlled<br/>Maximum<br/>Power Density<br/>(mW/cm²)</th>
+            <th class="header">Controlled<br/>Compliance<br/>Distance<br/>(feet)</th>
+            <th class="header">Uncontrolled Maximum<br/>Power Density<br/>(mW/cm²)</th>
+            <th class="header">Uncontrolled Compliance<br/>Distance<br/>(feet)</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for result in param_dict.results_list %}
+            <tr class="{% cycle 'row-odd' 'row-even' as td_class %}">
+                <td class="td-center">{{ result.band }}</td>
+                <td class="td_class">{{ result.frequency }}</td>
+                <td class="td_class">{{ result.c_max_density|floatformat:2|intcomma  }}</td>
+                <td class="td_class">{{ result.c_min_distance_feet|floatformat:2|intcomma  }}</td>
+                <td class="td_class">{{ result.u_max_density|floatformat:2|intcomma  }}</td>
+                <td class="td_class">{{ result.u_min_distance_feet|floatformat:2|intcomma }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+</body>
+</html>

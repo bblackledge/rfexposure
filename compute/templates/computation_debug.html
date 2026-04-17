@@ -1,0 +1,298 @@
+{% extends "layouts/base-gridbg.html" %}
+{% block page-meta %}{% endblock %}
+{% block title %}Computation Report{% endblock %}
+
+{% load static %}
+
+{% load humanize %}
+
+{% block page-styles %}
+
+    <style>
+
+        .row {
+            display: inline !important;
+        }
+
+        .rowblock {
+            display: flex !important;
+        }
+
+        .centered-box {
+            width: 84%;
+            max-width: 1400px; /* Optional: Max width to limit the box size */
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .internal-box {
+            width: 100%;
+            max-width: 1400px; /* Optional: Max width to limit the box size */
+            margin: 20px auto 0;
+            padding: 0 20px 10px 20px;
+            background-color: #fff;
+        }
+
+        .internal-title {
+            color: #285B93;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 0 0 10px 0;
+        }
+
+        .internal-subtitle {
+            color: #000;
+            font-size: 14px;
+            padding: 0 0 10px 0;
+            font-weight: bold;
+        }
+
+        .internal-data {
+            color: #000;
+            font-size: 12px;
+            font-weight: 400;
+            padding: 0 0 15px 12px;
+        }
+
+        strong, b {
+            display: inline !important;
+        }
+
+        .bolder {
+            font-weight: bold;
+            color: #285B93;
+            padding-left: 0;
+        }
+        .list_container {
+            display: flex;
+            gap: 28px; /* Adjust the value as needed */
+        }
+    </style>
+
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block topbar %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="centered-box">
+            <div class="internal-box">
+                <div class="rowblock internal-title" style="padding: 10px 0 0 0">
+                    <strong>RF Exposure Computation Report</strong>
+                    <br /><br />
+                    <span class="internal-data">A frequency from each band in the Multi-Band Group you selected
+                        (e.g., MF/HF or VHF/UHF) has been computed.
+                    Each frequency and the computations associated with that particular frequency are
+                    displayed on individual pages in this report. For more information regarding these
+                    calculations and how to interpret them, please refer to the application's manual page at:
+                    https://www.rfexposure.com/manual
+                    </span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="centered-box">
+            {% for rec in data.results_list %}
+                <div class="internal-box" style="margin-bottom: 20px">
+                    <div class="row internal-data">
+
+                        <span class="internal-title">U.S. Amateur Band (meters): {{ rec.band }}</span> <br/><br/>
+
+                        <div class="list_container">
+                            <br />
+                            <span class="internal-subtitle">FREQUENCY</span>
+                             <br />
+                            * Frequency (MHz): <span class="bolder">{{ rec.frequency|floatformat:4|intcomma }}</span>
+                        </div>
+
+                        <br />
+                        <br />
+
+                        <div class="list_container">
+                            <span class="internal-subtitle">TRANSMIT-RECEIVE</span>
+                            <br />
+
+                            * Transmit Time (min.):<span class="bolder"> {{ rec.c_intermediates.transmit_time|floatformat:2|intcomma }}</span>
+
+                            <br />
+
+                            * Receive Time (min.):<span class="bolder"> {{ rec.c_intermediates.receive_time|floatformat:2|intcomma }}</span>
+
+                        </div>
+
+                        <br />
+                        <br/>
+
+                        <div class="list_container">
+                            <span class="internal-subtitle">POWER</span>
+                            <br />
+                            (P) Power-PEP (W):<span
+                            class="bolder"> {{ data.effective_power|floatformat:0|intcomma }}</span>
+                            <br />
+                            (P) Power (mW):<span
+                                class="bolder"> {{ rec.c_intermediates.transmit_milli_watts_power|floatformat:0|intcomma }}</span>
+
+                            <br />
+
+                            (DF) Duty Factor:<span class="bolder"> {{ data.duty_factor|floatformat:2|intcomma }}</span>
+
+                        </div>
+
+                        <br/>
+                        <br/>
+
+                        <span class="internal-subtitle">ANTENNA GAIN</span> <br/>
+                        (G) Antenna Gain (Numeric): 10^({{ data.antenna_gain }} dBi/10) = <span
+                            class="bolder">{{ rec.c_intermediates.antenna_gain|floatformat:4|intcomma }}</span> <br/>
+
+                        <br/>
+                        <span class="internal-subtitle">GROUND REFLECTION</span> <br/>
+                        (GR) Ground Reflection Multiplier: <span
+                            class="bolder">{{ rec.c_intermediates.ground_reflection_multiplier|floatformat:2 }}</span>
+                        <br/>
+                        <br/>
+
+
+                        <span class="internal-subtitle">REFACTORED POWER DENSITY EQUATION FOR MINIMUM SAFE DISTANCE</span>
+                        <br/>
+                        (R) Radius (cm) = <span class="bolder">sqrt((GR x PE x G) / (S x PI))</span>
+                        <br/>
+                        <br/>
+
+
+                        <span class="internal-subtitle">CONTROLLED MINIMUM COMPLIANCE DISTANCE</span> <br/>
+                        Control Mode: <span class="bolder">{{ rec.c_intermediates.control_mode }}</span> <br/>
+                        {#                            Interval (minutes): {{ rec.c_intermediates.interval }}  <br />#}
+                        (S) Controlled Maximum Density (mW/cm&sup2;): <span
+                            class="bolder">{{ rec.c_max_density|floatformat:2|intcomma }}</span> (Lookup Table)
+
+                        <br/>
+
+                        (TR) Transmit Time Ratio: <span class="bolder">{{ rec.c_intermediates.transmit_time_percentage|floatformat:4|intcomma  }}</span>
+
+                        <br/>
+
+                        (PE) Power (Effective) (mW): P&nbsp;x&nbsp;DF&nbsp;x&nbsp;TR&nbsp;=&nbsp;
+                            {{ rec.c_intermediates.transmit_milli_watts_power|floatformat:0|intcomma }}
+                            x
+                            {{ data.duty_factor|floatformat:2|intcomma }}
+                            x
+                            {{ rec.c_intermediates.transmit_time_percentage|floatformat:4|intcomma }}
+                            =
+                            <span class="bolder">{{ rec.c_intermediates.power|floatformat:0|intcomma }}</span>
+
+                        <br />
+
+                        (R) Radius (cm): sqrt((GR x PE x G) / (S x PI)) =
+                        sqrt(({{ rec.c_intermediates.ground_reflection_multiplier|floatformat:2 }}
+                        x {{ rec.c_intermediates.power|floatformat:0|intcomma }}
+                        x {{ rec.c_intermediates.antenna_gain|floatformat:4|intcomma }})
+                        / ({{ rec.c_max_density|floatformat:2|intcomma }} x 3.14159 ))
+                        = <span class="bolder">{{ rec.c_intermediates.min_distance|floatformat:4|intcomma }}</span>
+
+                        <br/>
+                        Minimum Compliance Distance:
+                        <span
+                            class="bolder">{{ rec.c_intermediates.min_distance|floatformat:4|intcomma }} (cm)
+                        </span>                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                        &nbsp;&nbsp;
+
+                        <span
+                            class="bolder">{{ rec.c_intermediates.min_distance_feet|floatformat:4|intcomma }} (ft)
+                        </span>
+
+                        &nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span
+                            class="bolder">{{ rec.c_intermediates.min_distance_meter|floatformat:4|intcomma }} (m)
+                        </span>
+
+                        <br/>
+                        <br/>
+
+                        <span class="internal-subtitle">UNCONTROLLED MINIMUM COMPLIANCE DISTANCE</span> <br/>
+                        Control Mode: <span class="bolder">{{ rec.u_intermediates.control_mode }}</span> <br/>
+                        {#                            Interval (minutes): {{ rec.u_intermediates.interval }}  <br />#}
+                        (S) Uncontrolled Maximum Density (mW/cm&sup2;): <span
+                            class="bolder">{{ rec.u_max_density|floatformat:2|intcomma }}</span> (Lookup Table)
+
+                        <br/>
+
+                        (TR) Transmit Time Ratio: <span class="bolder">{{ rec.u_intermediates.transmit_time_percentage|floatformat:4|intcomma  }}</span>
+
+                        <br/>
+
+                        (PE) Power (Effective) (mW): P&nbsp;x&nbsp;DF&nbsp;x&nbsp;TR&nbsp;=&nbsp;
+                            {{ rec.u_intermediates.transmit_milli_watts_power|floatformat:0|intcomma }}
+                            x
+                            {{ data.duty_factor|floatformat:2|intcomma }}
+                            x
+                            {{ rec.u_intermediates.transmit_time_percentage|floatformat:4|intcomma  }}
+                            =
+                            <span class="bolder">{{ rec.u_intermediates.power|floatformat:0|intcomma }}</span>
+
+                        <br />
+
+
+                        (R) Radius (cm): sqrt((GR x PE x G) / (S x PI)) =
+                        sqrt(({{ rec.u_intermediates.ground_reflection_multiplier|floatformat:2 }}
+                        x {{ rec.u_intermediates.power|floatformat:0|intcomma }}
+                        x {{ rec.u_intermediates.antenna_gain|floatformat:4|intcomma }})
+                        / ({{ rec.u_max_density|floatformat:2|intcomma }} x 3.14159 ))
+                        = <span class="bolder">{{ rec.u_intermediates.min_distance|floatformat:4|intcomma }}</span>
+
+                        <br/>
+
+                        Minimum Compliance Distance:
+                        <span
+                            class="bolder">{{ rec.u_intermediates.min_distance|floatformat:4|intcomma }} (cm)
+                        </span>                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                        &nbsp;&nbsp;
+
+                        <span
+                            class="bolder">{{ rec.u_intermediates.min_distance_feet|floatformat:4|intcomma }} (ft)
+                        </span>
+
+                        &nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span
+                            class="bolder">{{ rec.u_intermediates.min_distance_meter|floatformat:4|intcomma }} (m)
+                        </span>
+
+                        <br/>
+                    </div>
+                </div>
+
+                {% if not forloop.last %}
+                    <pdf:nextpage/>
+                 {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+
+{% endblock %}
+
+<!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+{% block page-footer-scripts %}
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.0/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+{% endblock %}
+<!-- END PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->

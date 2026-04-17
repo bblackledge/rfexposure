@@ -1,0 +1,191 @@
+{% extends "layouts/base.html" %}
+{% block page-meta %}{% endblock %}
+{% block title %}RF Exposure Report Calculation Worksheet Instructions{% endblock %}
+
+{% load static %}
+
+{% block page-header-scripts %}
+{% endblock %}
+
+{% block page-styles %}
+
+    <style>
+
+        body {
+            background-color: #dbe1fc;
+        }
+
+        .centered-box {
+            width: 84%;
+            max-width: 1200px;
+            margin: 30px auto 0;
+        }
+
+        .internal-box {
+            width: 100%;
+            max-width: 1200px; /* Optional: Max width to limit the box size */
+            margin: 20px auto 0;
+            border: 1px solid #bbbcbd;
+            background-color: #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px 20px 30px;
+        }
+
+        .internal-title {
+            color: #285B93;
+            font-size: 28px;
+            font-weight: 600;
+            padding: 0 0 10px 12px;
+        }
+
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="centered-box">
+
+            <div class="internal-box">
+                <div class="row internal-title" style="padding-bottom: 0">
+                    <div class="col-md-12" style="vertical-align: middle">
+                        <img src="{% static 'assets/img/logo_icon.png' %}" alt="worksheet icon" height="110px"
+                             width="110px" style="margin-left: -24px">
+                        RF Exposure Report Calculation Worksheet Instructions
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-12" style="font-size: 1.1em">
+                        The <strong>RF Exposure Report Calculation Worksheet</strong> is used to define an antenna's
+                        operating parameters for generating an RF exposure report. The data entry process is
+                        similar to the legacy RF exposure calculators used by amateur radio operators for
+                        many years, with some notable updates and enhancements.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="centered-box">
+
+            <div class="internal-box">
+
+                <div class="row mt-2" style="padding: 40px 30px 20px 30px">
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-12" style="text-align: center; vertical-align: middle;">
+                                <img src="{% static 'assets/img/manual cover page.png' %}" alt="worksheet icon"
+                                     height="385px"
+                                     width="300px" style="margin-left: 0; border: solid #bbb 2px; margin-top: 0">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12" style="margin-top: 20px; font-size: 1.1em">
+                                To get more information on the data entry requirements, as well as detailed
+                                instructions on how to interpret the calculations and results for the RF exposure report
+                                generated, click the button below to download the latest edition of the
+                                <i>RFExposure User Manual</i>.
+                                <div style="text-align: center; margin-top: 15px;">
+                                    <a href="{% static 'assets/img/RFExposureManual.pdf' %}"
+                                       download="RFExposureManual.pdf">
+                                        <button class="btn btn-primary" style="background-color: #B72E2C; font-weight: 500;
+        font-size: 17px; border: solid 1px #000">Download RFExposure User Manual PDF
+                                        </button>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6" style="font-size: 1.1em">
+                        <div style="padding-bottom: 10px">
+                            However, there are some data entry differences between <b>RFExposure</b> and the legacy
+                            calculators that you should to be aware of:
+                        </div>
+                        <ul>
+                            <li>To define various report titles and labels, there is a short worksheet section
+                                called <strong>Report Personalization</strong> where you define a description
+                                of the report, as well as define your name, call sign, and email address
+                                which are printed on the cover page.
+                            </li>
+                            <br/>
+
+                            <li> RF Exposure Report features the ability to compute either
+                                "<strong>Single Frequency</strong>"
+                                or "<strong>Multi-Band Group</strong>" exposure analyses. If you choose the
+                                "<strong>Single Band</strong>" option,
+                                the calculator works virtually identical to legacy RF exposure calculators.
+                                However, if you select the "<strong>Multi-Band Group</strong>" option, all "bands"
+                                within either the "MF/HF" or "VHF/UHF" frequency ranges will be generated.
+                            </li>
+                            <br/>
+                            <li>
+                                The <strong>Transmission Specifications</strong> section of the worksheet now supports
+                                <strong>FT8</strong> and <strong>FT4</strong> as selections in the
+                                <strong>Mode Duty Factor</strong> field.
+                                The existing legacy calculators don't support sub-minute Transmit
+                                and Receive Times in their internal power calculation algorithms.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                {#                <div class="row mt-2">#}
+                {#                    <div class="col-md-12" style="font-size: 1.1em">#}
+                {#                        <div style="padding-bottom: 10px">#}
+                {#                            <strong>RF Exposure Report</strong> builds on the familiar functionality of legacy tools#}
+                {#                            while introducing powerful features like multi-band analysis and support#}
+                {#                            for modern digital modes. We hope you enjoy the time-saving benefits of this new#}
+                {#                            amateur radio tool.#}
+                {#                        </div>#}
+                {#                    </div>#}
+                {#                </div>#}
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="centered-box">
+            <div class="internal-box">
+                <div class="row mt-2">
+                    <div class="row internal-title" style="padding-bottom: 0">
+                        <div class="col-md-6" style="vertical-align: middle">
+                            <a href="https://www.rfexposure.com">
+                                <button class="btn btn-primary" style="font-weight: 500; font-size: 17px">
+                                    Return to Main Page
+                                </button>
+                            </a>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <a href="{% url 'compute:compute-form' %}">
+                                <button class="btn btn-primary"
+                                        style="background-color: green; font-weight: 500; font-size: 17px">Goto RF
+                                    Exposure Calculation Worksheet
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+<!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+{% block page-footer-scripts %}
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.0/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+{% endblock %}
+<!-- END PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->

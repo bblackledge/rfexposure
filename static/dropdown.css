@@ -1,0 +1,25 @@
+.dropdown-menu {
+    font-family: sans-serif;
+    width: 100%;
+    padding: 0;
+    display: none; /* Hide dropdown menu initially */
+    position: absolute;
+    z-index: 1000;
+}
+
+.dropdown-menu .table {
+    margin-bottom: 0;
+    border: 1px solid #000; /* Add border to table */
+    border-collapse: collapse; /* Collapse table borders */
+}
+
+.dropdown-menu .table th, .dropdown-menu .table td {
+    padding: 0.5rem; /* Add padding to table cells */
+    border: 1px solid #000; /* Add border to table cells */
+}
+
+.dropdown-menu .table tbody tr:hover, .dropdown-menu .table tbody tr.selected {
+    color: white;
+    background-color: #587088; /* Add hover and selected effect */
+    cursor: pointer; /* Change cursor to pointer on hover */
+}

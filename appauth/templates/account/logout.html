@@ -1,0 +1,23 @@
+{% extends "account/base.html" %}
+
+{% block account_content %}
+<div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/60">
+    <h1 class="mb-2 text-3xl font-black text-slate-900">Log Out</h1>
+    <p class="mb-8 text-slate-500">Confirm that you want to end your authenticated session.</p>
+
+    <div class="flex flex-col gap-3 sm:flex-row">
+        <form method="post" action="{% url 'appauth:account_logout' %}" class="flex-1">
+            {% csrf_token %}
+            <button type="submit" class="w-full rounded-2xl bg-slate-900 px-6 py-4 font-bold text-white hover:bg-blue-600">
+                Log Out
+            </button>
+        </form>
+
+        <button type="button"
+                onclick="window.history.back(); return false;"
+                class="inline-flex flex-1 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 px-6 py-4 font-bold text-black transition hover:bg-slate-200 hover:border-slate-300 cursor-pointer">
+            Cancel
+        </button>
+    </div>
+</div>
+{% endblock %}

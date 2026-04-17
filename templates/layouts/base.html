@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+    {% block page-meta %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- BEGIN PAGE LEVEL HEADER SCRIPTS -->
+    {% block page-header-scripts %}{% endblock %}
+    <!-- END PAGE LEVEL HEADER SCRIPTS -->
+
+
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css"/>
+    <!-- END GLOBAL MANDATORY STYLES -->
+
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+    {% block page-styles %}{% endblock %}
+    <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+</head>
+
+<body>
+
+{% block navbar %}{% endblock %}
+
+{% if messages %}
+<div class="px-4 pt-4 sm:px-6 lg:px-8">
+    <div class="mx-auto w-full max-w-6xl space-y-3">
+        {% for message in messages %}
+            <div class="rounded-2xl border px-4 py-3 text-sm font-medium shadow-sm
+                        {% if message.tags == 'error' or message.tags == 'danger' %}
+                            border-red-200 bg-red-50 text-red-800
+                        {% elif message.tags == 'success' %}
+                            border-emerald-200 bg-emerald-50 text-emerald-800
+                        {% else %}
+                            border-slate-200 bg-slate-50 text-slate-700
+                        {% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!--  BEGIN MAIN CONTAINER  -->
+<div class="main-container" id="container">
+
+    {% block topbar %}{% endblock %}
+
+    <!--  BEGIN CONTENT AREA  -->
+    {% block content %}
+    {% endblock %}
+    <!-- CONTENT AREA -->
+
+</div>
+
+<!-- END MAIN CONTAINER -->
+
+<!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+
+<!-- END GLOBAL MANDATORY SCRIPTS -->
+
+<!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+{% block page-footer-scripts %}{% endblock %}
+<!-- END PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+</body>
+</html>
