@@ -15,7 +15,7 @@
                     RF Exposure Report Generator
                 </h1>
                 <p class="text-lg text-slate-600 leading-relaxed">
-                    Create RF exposure reports using our enhanced calculation and report generation engine.
+                    Create digital RF exposure reports using our enhanced calculation and report engine.
                 </p>
                 <div class="mt-6 flex justify-center">
                     <a href="{% url 'instructions' %}"
@@ -70,7 +70,7 @@
                         </div>
                         <div class="ml-5">
                             <h4 class="text-lg font-bold text-slate-900">Personalized Reporting</h4>
-                            <p class="text-slate-500 text-sm leading-relaxed mt-1">Define report titles, operator details (call sign, email), antenna descriptions, etc. for distinctive cover pages.</p>
+                            <p class="text-slate-500 text-sm leading-relaxed mt-1">Define report title, operator details (call sign, email), antenna description, etc. for a distinctive cover page.</p>
                         </div>
                     </div>
 
@@ -79,8 +79,8 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                         </div>
                         <div class="ml-5">
-                            <h4 class="text-lg font-bold text-slate-900">Multi-Band Calculations</h4>
-                            <p class="text-slate-500 text-sm leading-relaxed mt-1">Analyze single frequencies or run comprehensive exposure calculations across full MF-HF or VHF-UHF bands.</p>
+                            <h4 class="text-lg font-bold text-slate-900">Multi-Band Calculation Sets</h4>
+                            <p class="text-slate-500 text-sm leading-relaxed mt-1">Analyze a single frequency or run comprehensive exposure calculations across the full spectrum of HF or VHF-UHF bands.</p>
                         </div>
                     </div>
 
@@ -89,8 +89,8 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                         </div>
                         <div class="ml-5">
-                            <h4 class="text-lg font-bold text-slate-900">Digital Mode Precision</h4>
-                            <p class="text-slate-500 text-sm leading-relaxed mt-1">Updated duty factors for FT8/4/2 and advanced sub-minute power calculation algorithms.</p>
+                            <h4 class="text-lg font-bold text-slate-900">Digital Report Generation</h4>
+                            <p class="text-slate-500 text-sm leading-relaxed mt-1">Create a single PDF report for an entire exposure calculation set. Paper-based exposure reports are now a thing of the past.</p>
                         </div>
                     </div>
                 </div>
@@ -109,6 +109,9 @@
                 {% endif %}
                 <a href="{% url 'workflow-choice' %}"
                    class="w-full sm:w-auto px-8 py-3.5 bg-[#15446A] text-white font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#103553] transition-all shadow-sm sm:self-end">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
                     <span>Generate RF Exposure Report</span>
                 </a>
             </div>

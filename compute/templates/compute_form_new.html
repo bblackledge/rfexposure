@@ -155,7 +155,7 @@
                                value="{{ form.call_sign.value|default_if_none:'' }}"
                                class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 transition outline-none">
                         <p class="text-[12px] mt-2 text-slate-600 font-medium">
-                            Provide your allocated call sign (e.g., KJ7ABC) for contact details.
+                            Provide your allocated call sign (e.g., W5BDB) for contact details.
                         </p>
                     </div>
                     <div>
@@ -201,11 +201,11 @@
                                     class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 outline-none">
                                 <option value="0"
                                         {% if form.frequency_mode.value == 0 or form.frequency_mode.value == '0' %}selected{% endif %}>
-                                    MF/HF (1.8 MHz - 54.0 MHz)
+                                    MF/HF (1.8 MHz - 50.0 MHz)
                                 </option>
                                 <option value="1"
                                         {% if form.frequency_mode.value == 1 or form.frequency_mode.value == '1' %}selected{% endif %}>
-                                    VHF/UHF
+                                    VHF/UHF (50.0 MHz - 1,300 MHz)
                                 </option>
                             </select>
                             <p class="text-[12px] mt-2 text-slate-600 font-medium">

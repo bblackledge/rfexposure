@@ -20,6 +20,9 @@
             <div class="mt-4 flex justify-center">
                 <a href="{% url 'instructions' %}"
                    class="inline-flex items-center justify-center rounded-full bg-[#972025] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#7f1b21] hover:shadow-md">
+                    <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
                     Return to Main Application Page
                 </a>
             </div>
@@ -30,9 +33,9 @@
                 <div class="mb-5 inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#15446A]">
                     RFExposure Account Dashboard
                 </div>
-                <h2 class="text-2xl font-bold text-slate-900">Generate and Save RF Exposure</h2>
+                <h2 class="text-2xl font-bold text-slate-900">Generate and Save Exposure Reports</h2>
                 <p class="mt-3 text-slate-600 leading-relaxed">
-                    Sign in to save and download RF exposure reports and return to them later from within account dashboard.
+                    Registered user have the option to save, duplicate, delete, and re-generate past RF exposure report definitions.
                 </p>
                 <div class="mt-6">
                     {% if user.is_authenticated %}
@@ -43,6 +46,9 @@
                     {% else %}
                         <a href="{% url 'appauth:account_login' %}?next={% url 'compute:dashboard' %}"
                            class="inline-flex w-full items-center justify-center rounded-2xl bg-[#15446A] px-5 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-[#103553]">
+                            <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                            </svg>
                             Sign In to Account Dashboard
                         </a>
                     {% endif %}
@@ -59,8 +65,11 @@
                 </p>
                 <div class="mt-6">
                     <a href="{% url 'compute:compute-form' %}"
-                       class="inline-flex w-full items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-blue-600">
-                        Create Basic Report
+                       class="inline-flex w-full items-center justify-center rounded-2xl bg-[#15446A] px-5 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-[#103553]">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Create Basic RF Exposure Report
                     </a>
                 </div>
             </section>
