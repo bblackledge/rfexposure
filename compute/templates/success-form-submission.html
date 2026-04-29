@@ -18,7 +18,7 @@
         <div class="overflow-hidden rounded-2xl bg-white shadow-[0_10px_30px_rgba(15,23,42,0.08)] ring-1 ring-slate-100">
             <div class="px-6 py-8 sm:px-10 sm:py-10 lg:px-14 lg:py-12">
                 <div class="mx-auto max-w-3xl text-center">
-                    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-600/10 text-blue-700 shadow-sm">
+                    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-600/10 text-green-700 shadow-sm">
                         <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
                             <circle cx="12" cy="12" r="9" stroke-opacity="0.15" />
@@ -81,7 +81,9 @@
                     <div class="flex justify-center">
                         <a href="{% url 'instructions' %}"
                            class="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/15 transition hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-500/20">
-                            <span aria-hidden="true">←</span>
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M21 12H3" />
+                            </svg>
                             <span>Return to Main Application Page</span>
                         </a>
                     </div>

@@ -40,451 +40,505 @@
     <div class="min-h-screen bg-slate-50 py-10 px-4 font-sans text-slate-900">
     <div class="max-w-[70rem] mx-auto space-y-8">
 
-    <header class="flex items-center justify-between bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-        <div class="flex items-center space-x-4">
-                <img src="{% static 'assets/img/log-base-transparent.png' %}" class="h-14 w-14" alt="Logo">
+    <header class="flex flex-col gap-4 bg-white p-6 rounded-3xl shadow-sm border border-slate-200 sm:flex-row sm:items-start sm:justify-between">
+        <div class="flex items-start space-x-4">
+            <img src="{% static 'assets/img/log-base-transparent.png' %}" class="mt-1 h-14 w-14" alt="Logo">
 
             <div>
                 <h1 class="text-[31px] font-bold mb-2">RF Exposure Calculation Worksheet</h1>
-                <p class="text-sm text-slate-500 mt-1">Fields marked with <span class="text-red-500">*</span> are required.
+                <p class="text-sm text-slate-500 mt-1">Fields marked with <span class="text-red-500">*</span> are
+                    required.
                 </p>
                 <div class="mt-4">
                     {% if user.is_authenticated %}
-                        <span class="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
-                            Signed in as {{ user.email|default:user.username }}
+                        <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-[14px] font-bold text-emerald-700">
+                            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                            Signed in as {{ user.email|default:user.username|lower }}
                         </span>
                     {% else %}
-                        <span class="inline-flex items-center rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700 ring-1 ring-rose-200">
+                        <span class="inline-flex items-center gap-2 rounded-full bg-rose-50 px-3 py-1 text-[14px] font-bold text-rose-700">
+                            <span class="h-2 w-2 rounded-full bg-rose-500"></span>
                             Anonymous User
                         </span>
                     {% endif %}
                 </div>
             </div>
         </div>
-        <a href="#"
-           onclick="window.history.back(); return false;"
-           class="text-sm font-semibold text-black-700 bg-gray-100 hover:bg-gray-200 px-4 py-1 rounded-2xl border border-blue-100 transition shadow-sm inline-flex items-center gap-1">
-            <span class="mb-2.5 text-[32px] leading-none">←</span>
+        <a href="javascript:history.back()"
+           class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white text-slate-700 font-semibold shadow-sm hover:bg-slate-50 hover:border-slate-300 transition-all"
+           style="padding: 0.45rem 1.15rem 0.575rem 1.15rem;">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l-7-7 7-7"/>
+            </svg>
             <span>Return to Previous</span>
         </a>
     </header>
 
     <form method="post" class="space-y-8">
-    {% csrf_token %}
+        {% csrf_token %}
 
-    {% if form.errors %}
-        <div class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-red-900 shadow-sm" role="alert"
-             aria-live="polite">
-            <div class="flex items-start gap-3">
-                <div class="mt-1 h-3 w-3 shrink-0 rounded-full bg-red-500"></div>
-                <div class="min-w-0">
-                    <p class="font-bold">Please correct the errors below before submitting again:</p>
-                    {% if form.non_field_errors %}
-                        <ul class="mt-2 list-disc pl-5 text-sm space-y-1">
-                            {% for error in form.non_field_errors %}
-                                <li>{{ error }}</li>
+        {% if form.errors %}
+            <div class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-red-900 shadow-sm" role="alert"
+                 aria-live="polite">
+                <div class="flex items-start gap-3">
+                    <div class="mt-1 h-3 w-3 shrink-0 rounded-full bg-red-500"></div>
+                    <div class="min-w-0">
+                        <p class="font-bold">Please correct the errors below before submitting again:</p>
+                        {% if form.non_field_errors %}
+                            <ul class="mt-2 list-disc pl-5 text-sm space-y-1">
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        <ul class="mt-2 space-y-1 text-sm">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li><strong>{{ field.label|title }}:</strong> {{ error }}</li>
+                                {% endfor %}
                             {% endfor %}
                         </ul>
-                    {% endif %}
-                    <ul class="mt-2 space-y-1 text-sm">
-                        {% for field in form %}
-                            {% for error in field.errors %}
-                                <li><strong>{{ field.label|title }}:</strong> {{ error }}</li>
-                            {% endfor %}
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-
-
-    <!-- PANEL 1-->
-    <section class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-        <div class="p-8 border-b border-slate-50 bg-slate-50/30">
-            <div class="flex items-start justify-between gap-4 mb-2">
-                <div class="flex items-center space-x-3">
-                <img src="{% static 'assets/img/report_icon.png' %}" alt="Report section icon"
-                     class="h-[72px] w-[72px] shrink-0 object-contain">
-                <h2 class="text-2xl font-bold">Report Personalization</h2>
-                <button type="button" data-help-target="report-personalization"
-                        class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#15446A] text-white shadow-sm transition hover:bg-[#103553] hover:shadow-md"
-                        aria-label="Help for report personalization">
-                    <span class="text-[14px] font-black leading-none">?</span>
-                </button>
-                </div>
-            </div>
-            <p class="text-sm text-slate-500">These details will be printed on the cover page of your generated
-                report.</p>
-        </div>
-
-        <div class="p-8 space-y-6">
-            <div>
-                <label class="block text-sm font-semibold mb-2">Report Description <span
-                        class="text-red-500">*</span></label>
-                <input type="text" name="report_description"
-                       value="{{ form.report_description.value|default_if_none:'' }}"
-                       class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 transition outline-none">
-                <p class="text-[12px] mt-2 text-slate-600 font-medium">
-                    Max 128 characters (e.g., Annual Station Safety Audit 2026)
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="max-w-[220px]">
-                    <label class="block text-sm font-semibold mb-2">Full Name <span
-                            class="text-red-500">*</span></label>
-                    <input type="text" name="name"
-                           value="{{ form.operator_name.value|default_if_none:'' }}"
-                           class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 transition outline-none">
-                    <p class="text-[12px] mt-2 text-slate-600 font-medium">
-                        Enter the name to display on the cover page exactly as it should appear.
-                    </p>
-                </div>
-                <div class="max-w-[220px]">
-                    <label class="block text-sm font-semibold mb-2">Call Sign <span
-                            class="text-red-500">*</span></label>
-                    <input type="text" name="call_sign"
-                           value="{{ form.call_sign.value|default_if_none:'' }}"
-                           class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 transition outline-none">
-                    <p class="text-[12px] mt-2 text-slate-600 font-medium">
-                        Provide your allocated call sign (e.g., KJ7ABC) for contact details.
-                    </p>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold mb-2">Email Address <span
-                            class="text-red-500">*</span></label>
-                    <input type="email" name="email"
-                           value="{{ form.email.value|default_if_none:'' }}"
-                           class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 transition outline-none">
-                    <p class="text-[12px] mt-2 text-slate-600 font-medium">
-                        Used on the cover page so reviewers know who prepared the worksheet.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- PANEL 2 -->
-    <section class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-        <div class="p-8 border-b border-slate-50 bg-slate-50/30">
-            <div class="flex items-start justify-between gap-4 mb-2">
-                <div class="flex items-center space-x-3">
-                <img src="{% static 'assets/img/freq_icon.png' %}" alt="Frequency analysis icon"
-                     class="h-[72px] w-[72px] shrink-0 object-contain">
-                <h2 class="text-2xl font-bold">Exposure Analysis Mode</h2>
-                <button type="button" data-help-target="exposure-analysis"
-                        class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#15446A] text-white shadow-sm transition hover:bg-[#103553] hover:shadow-md"
-                        aria-label="Help for exposure analysis mode">
-                    <span class="text-[14px] font-black leading-none">?</span>
-                </button>
-                </div>
-            </div>
-            <p class="text-sm text-slate-500">Select whether to analyze a specific frequency or a standard band
-                group.</p>
-        </div>
-
-        <div class="p-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-semibold mb-2">Multi-Band Group</label>
-                    <select name="band_group"
-                            class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 outline-none">
-                        <option value="0" {% if form.frequency_mode.value == 0 or form.frequency_mode.value == '0' %}selected{% endif %}>MF/HF (1.8 MHz - 54.0 MHz)</option>
-                        <option value="1" {% if form.frequency_mode.value == 1 or form.frequency_mode.value == '1' %}selected{% endif %}>VHF/UHF</option>
-                    </select>
-                        <p class="text-[12px] mt-2 text-slate-600 font-medium">
-                        Pick the multi-band group to evaluate when not providing a single frequency.
-                    </p>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold mb-2">Frequency Position in Band</label>
-                    <select name="freq_pos"
-                            class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 outline-none">
-                        <option value="0" {% if form.frequency_position.value == 0 or form.frequency_position.value == '0' %}selected{% endif %}>Lowest Frequency in Band</option>
-                        <option value="1" {% if form.frequency_position.value == 1 or form.frequency_position.value == '1' %}selected{% endif %}>Center Frequency in Band</option>
-                        <option value="2" {% if form.frequency_position.value == 2 or form.frequency_position.value == '2' %}selected{% endif %}>Highest Frequency in Band</option>
-                    </select>
-                    <p class="text-[12px] mt-2 text-slate-600 font-medium">
-                        Specify which end of the band should be used for the calculation.
-                    </p>
-                </div>
-            </div>
-
-                <div class="flex flex-col items-center justify-center border-l border-slate-100 pl-8">
-                    <div class="w-full">
-                        <label class="block text-sm font-semibold mb-2">Single Frequency Analysis</label>
-                        <div class="flex items-center gap-3">
-                            <input type="number" step="0.001" name="single_freq"
-                                   value="{{ form.frequency.value|default_if_none:'' }}"
-                                   class="rf-form-control flex-1 px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 transition outline-none">
-{#                            <span class="text-sm font-semibold text-slate-500">MHz</span>#}
-                        </div>
-                        <p class="mt-3 text-xs text-slate-600 italic">
-                            Enter the operating frequency in MHz (e.g., 14.250). Providing this value overrides the
-                            Multi-Band Group choice.
-                        </p>
-                </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- PANEL 3 -->
-    <section class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-        <div class="p-8 border-b border-slate-50 bg-slate-50/30">
-            <div class="flex items-start justify-between gap-4 mb-2">
-                <div class="flex items-center space-x-3">
-                <img src="{% static 'assets/img/tower_icon.png' %}" alt="Antenna section icon"
-                     class="h-[72px] w-[72px] shrink-0 object-contain">
-                <h2 class="text-2xl font-bold">Antenna Specifications</h2>
-                <button type="button" data-help-target="antenna-specifications"
-                        class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#15446A] text-white shadow-sm transition hover:bg-[#103553] hover:shadow-md"
-                        aria-label="Help for antenna specifications">
-                    <span class="text-[14px] font-black leading-none">?</span>
-                </button>
-                </div>
-            </div>
-            <p class="text-sm text-slate-500">Provide the gain characteristics and environment effects for the antenna
-                system.</p>
-        </div>
-
-        <div class="p-8 space-y-8">
-            <div>
-                <label class="block text-sm font-semibold mb-2">Antenna Description <span class="text-red-500">*</span></label>
-                <input type="text" name="antenna_description"
-                       value="{{ form.antenna_description.value|default_if_none:'' }}"
-                       class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 transition outline-none">
-                <p class="text-[12px] mt-2 text-slate-600">
-                    Describe the specific antenna for this analysis (e.g., 3-Element Yagi @ 40ft)
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
-                <div>
-                    <label class="block text-sm font-semibold mb-2">Antenna Gain <span
-                            class="text-red-500">*</span></label>
-                    <div class="flex items-center gap-3">
-                        <input type="number" step="0.1" name="antenna_gain"
-                               value="{{ form.antenna_gain.value|default_if_none:'' }}"
-                               class="rf-form-control flex-1 px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 transition outline-none">
-{#                        <span class="text-sm font-semibold text-slate-500">dBi</span>#}
                     </div>
-                    <span class="block text-[12px] text-slate-500">Antenna Gain</span>
-                </div>
-
-                <label class="flex items-center p-4 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100 transition group">
-                    <input type="checkbox" name="ground_reflection"
-                           {% if form.ground_reflection.value %}checked{% endif %}
-                           class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500 border-slate-300 transition cursor-pointer">
-                    <div class="ml-4">
-                        <span class="block text-sm font-bold text-slate-800">Use Ground Reflection Effects</span>
-                        <span class="block text-[12px] text-slate-500">Integrates ground reflection for worst-case analysis</span>
-                    </div>
-                </label>
-            </div>
-        </div>
-    </section>
-
-    <!-- PANEL 4 -->
-    <section class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-        <div class="p-8 border-b border-slate-50 bg-slate-50/30">
-            <div class="flex items-start justify-between gap-4 mb-2">
-                <div class="flex items-center space-x-3">
-                <img src="{% static 'assets/img/transmission_icon.png' %}" alt="Transmission section icon"
-                     class="h-[72px] w-[72px] shrink-0 object-contain">
-                <h2 class="text-2xl font-bold">Transmission Specifications</h2>
-                <button type="button" data-help-target="transmission-specifications"
-                        class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#15446A] text-white shadow-sm transition hover:bg-[#103553] hover:shadow-md"
-                        aria-label="Help for transmission specifications">
-                    <span class="text-[14px] font-black leading-none">?</span>
-                </button>
                 </div>
             </div>
-            <p class="text-sm text-slate-500">Accurate power and duty cycle values are critical for a correct exposure
-                assessment.</p>
-        </div>
-
-        <div class="p-8">
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-10">
-                <div class="w-full min-w-0 md:col-span-2">
-                    <label class="block text-sm font-semibold mb-2">Transmitter Power <span
-                            class="text-red-500">*</span></label>
-                    <div class="flex items-center gap-3">
-                        <input type="number" step="1" name="transmitter_power"
-                               value="{{ form.effective_power.value|default_if_none:'' }}"
-                               class="rf-form-control flex-1 min-w-0 px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 outline-none">
-{#                        <span class="text-xs font-semibold uppercase text-slate-500 tracking-wide">Watts</span>#}
-                    </div>
-                    <p class="mt-2 text-[12px] text-slate-600 font-medium">Set the PEP Input to Antenna in Watts</p>
-                </div>
-
-                <div class="w-full min-w-0 md:col-span-4">
-                    <label class="block text-sm font-semibold mb-2">Mode Duty Factor <span class="text-red-500">*</span></label>
-                    <div>
-                        <select name="duty_factor"
-                            class="rf-form-control w-full min-w-0 px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 outline-none">
-                            {% for value, label in form.duty_factor.field.choices %}
-                                <option value="{{ value }}" {% if form.duty_factor.value|stringformat:"s" == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
-                            {% endfor %}
-                    </select>
-                    </div>
-                     <p class="mt-2 text-[12px] text-slate-600 font-medium">Set the Mode Duty Factor</p>
-                </div>
+        {% endif %}
 
 
-                <div class="w-full min-w-0 md:col-span-2">
-                    <label class="block text-sm font-semibold mb-2">Transmit Time <span
-                            class="text-red-500">*</span></label>
-                    <div class="flex items-center gap-3">
-                        <select name="tx_time"
-                                class="rf-form-control flex-1 min-w-0 px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 outline-none text-sm">
-                            {% for value, label in form.transmit_time.field.choices %}
-                                <option value="{{ value }}" {% if form.transmit_time.value|stringformat:"s" == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
-                            {% endfor %}
-                        </select>
-{#                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Mins</span>#}
-                    </div>
-                    <p class="mt-2 text-[12px] text-slate-600 font-medium">
-                        Set the transmit duration for each cycle in minutes.
-                    </p>
-                </div>
-
-                <div class="w-full min-w-0 md:col-span-2">
-                    <label class="block text-sm font-semibold mb-2">Receive Time <span
-                            class="text-red-500">*</span></label>
-                    <div class="flex items-center gap-3">
-                        <select name="rx_time"
-                                class="rf-form-control flex-1 min-w-0 px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 outline-none text-sm">
-                            {% for value, label in form.receive_time.field.choices %}
-                                <option value="{{ value }}" {% if form.receive_time.value|stringformat:"s" == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
-                            {% endfor %}
-                        </select>
-{#                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Mins</span>#}
-                    </div>
-                    <p class="mt-2 text-[12px] text-slate-600 font-medium">
-                        Set the receive duration for each cycle in minutes.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="max-w-[70rem] mx-auto mt-12 mb-20">
-    <div class="bg-slate-900 rounded-[2.5rem] p-1 shadow-2xl shadow-blue-900/20">
-        <div class="bg-slate-900 rounded-[2.2rem] border border-white/10 p-5 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-
-            <div class="flex flex-col items-center text-center">
-                <div class="flex flex-col items-center text-center">
-                    <div class="mb-[20px] flex items-center gap-3">
-                        <h2 class="text-2xl font-bold text-white">Ready to Finalize Your RFExposure Report?</h2>
-                        <button type="button" data-help-target="finalize-report"
+        <!-- PANEL 1-->
+        <section class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+            <div class="p-8 border-b border-slate-50 bg-slate-50/30">
+                <div class="flex items-start justify-between gap-4 mb-2">
+                    <div class="flex items-center space-x-3">
+                        <img src="{% static 'assets/img/report_icon.png' %}" alt="Report section icon"
+                             class="h-[72px] w-[72px] shrink-0 object-contain">
+                        <h2 class="text-2xl font-bold">Report Personalization</h2>
+                        <button type="button" data-help-target="report-personalization"
                                 class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#15446A] text-white shadow-sm transition hover:bg-[#103553] hover:shadow-md"
-                                aria-label="Help for finalizing report">
+                                aria-label="Help for report personalization">
                             <span class="text-[14px] font-black leading-none">?</span>
                         </button>
                     </div>
-                    <div class="flex items-center justify-center space-x-3 group cursor-pointer">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" name="include_calculations" {% if form.include_calculations.value %}checked{% endif %} class="sr-only peer">
-                            <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                        </label>
-                        <span class="text-white font-medium group-hover:text-white transition-colors">
-                            Advanced Cloud Subscribers: Include Calculation Pages?
-                        </span>
-                    </div>
-                    <p class="text-white text-xs mt-4 font-bold text-center">
-                        This feature is available to Advanced Cloud Subscribers and appends a calculation report for each band or frequency computed.
-                    </p>
                 </div>
+                <p class="text-sm text-slate-900">These following form field values will be displayed on the cover page
+                    of your generated
+                    report. This allows for easy identification of the report and its contents.</p>
             </div>
 
-            <div class="w-full md:w-auto">
-                <button type="submit"
-                        class="w-full md:w-auto px-7 py-3 bg-blue-600 text-white font-black rounded-2xl
+            <div class="p-8 space-y-6">
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Report Description <span
+                            class="text-red-500">*</span></label>
+                    <input type="text" name="report_description"
+                           value="{{ form.report_description.value|default_if_none:'' }}"
+                           class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 transition outline-none">
+                    <p class="text-[12px] mt-2 text-slate-600 font-medium">
+                        Max 128 characters (e.g., Annual Station Safety Audit 2026)
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="max-w-[220px]">
+                        <label class="block text-sm font-semibold mb-2">Full Name <span
+                                class="text-red-500">*</span></label>
+                        <input type="text" name="name"
+                               value="{{ form.operator_name.value|default_if_none:'' }}"
+                               class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 transition outline-none">
+                        <p class="text-[12px] mt-2 text-slate-600 font-medium">
+                            Enter the name to display on the cover page exactly as it should appear.
+                        </p>
+                    </div>
+                    <div class="max-w-[220px]">
+                        <label class="block text-sm font-semibold mb-2">Call Sign <span
+                                class="text-red-500">*</span></label>
+                        <input type="text" name="call_sign"
+                               value="{{ form.call_sign.value|default_if_none:'' }}"
+                               class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 transition outline-none">
+                        <p class="text-[12px] mt-2 text-slate-600 font-medium">
+                            Provide your allocated call sign (e.g., KJ7ABC) for contact details.
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Email Address <span
+                                class="text-red-500">*</span></label>
+                        <input type="email" name="email"
+                               value="{{ form.email.value|default_if_none:'' }}"
+                               class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 transition outline-none">
+                        <p class="text-[12px] mt-2 text-slate-600 font-medium">
+                            Used on the cover page so reviewers know who prepared the worksheet.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- PANEL 2 -->
+        <section class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+            <div class="p-8 border-b border-slate-50 bg-slate-50/30">
+                <div class="flex items-start justify-between gap-4 mb-2">
+                    <div class="flex items-center space-x-3">
+                        <img src="{% static 'assets/img/freq_icon.png' %}" alt="Frequency analysis icon"
+                             class="h-[72px] w-[72px] shrink-0 object-contain">
+                        <h2 class="text-2xl font-bold">Exposure Analysis Mode</h2>
+                        <button type="button" data-help-target="exposure-analysis"
+                                class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#15446A] text-white shadow-sm transition hover:bg-[#103553] hover:shadow-md"
+                                aria-label="Help for exposure analysis mode">
+                            <span class="text-[14px] font-black leading-none">?</span>
+                        </button>
+                    </div>
+                </div>
+                <p class="text-sm text-slate-900">Select whether to analyze a specific frequency or a standard band
+                    group.</p>
+            </div>
+
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Multi-Band Group</label>
+                            <select name="band_group"
+                                    class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 outline-none">
+                                <option value="0"
+                                        {% if form.frequency_mode.value == 0 or form.frequency_mode.value == '0' %}selected{% endif %}>
+                                    MF/HF (1.8 MHz - 54.0 MHz)
+                                </option>
+                                <option value="1"
+                                        {% if form.frequency_mode.value == 1 or form.frequency_mode.value == '1' %}selected{% endif %}>
+                                    VHF/UHF
+                                </option>
+                            </select>
+                            <p class="text-[12px] mt-2 text-slate-600 font-medium">
+                                Pick the multi-band group to evaluate when not providing a single frequency.
+                            </p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Frequency Position in Band</label>
+                            <select name="freq_pos"
+                                    class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 outline-none">
+                                <option value="0"
+                                        {% if form.frequency_position.value == 0 or form.frequency_position.value == '0' %}selected{% endif %}>
+                                    Lowest Frequency in Band
+                                </option>
+                                <option value="1"
+                                        {% if form.frequency_position.value == 1 or form.frequency_position.value == '1' %}selected{% endif %}>
+                                    Center Frequency in Band
+                                </option>
+                                <option value="2"
+                                        {% if form.frequency_position.value == 2 or form.frequency_position.value == '2' %}selected{% endif %}>
+                                    Highest Frequency in Band
+                                </option>
+                            </select>
+                            <p class="text-[12px] mt-2 text-slate-600 font-medium">
+                                Specify which end of the band should be used for the calculation.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center justify-center border-l border-slate-100 pl-8">
+                        <div class="w-full">
+                            <label class="block text-sm font-semibold mb-2">Single Frequency Analysis</label>
+                            <div class="flex items-center gap-3">
+                                <input type="number" step="0.001" name="single_freq"
+                                       value="{{ form.frequency.value|default_if_none:'' }}"
+                                       class="rf-form-control flex-1 px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 transition outline-none">
+                                {#                            <span class="text-sm font-semibold text-slate-500">MHz</span>#}
+                            </div>
+                            <p class="text-[12px] mt-3 text-slate-600 font-medium">
+                                Enter the operating frequency in MHz (e.g., 14.250). Providing this single value
+                                overrides the
+                                Multi-Band Group choice selection and will only generate a report with the single
+                                frequency requested.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PANEL 3 -->
+        <section class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+            <div class="p-8 border-b border-slate-50 bg-slate-50/30">
+                <div class="flex items-start justify-between gap-4 mb-2">
+                    <div class="flex items-center space-x-3">
+                        <img src="{% static 'assets/img/tower_icon.png' %}" alt="Antenna section icon"
+                             class="h-[72px] w-[72px] shrink-0 object-contain">
+                        <h2 class="text-2xl font-bold">Antenna Specifications</h2>
+                        <button type="button" data-help-target="antenna-specifications"
+                                class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#15446A] text-white shadow-sm transition hover:bg-[#103553] hover:shadow-md"
+                                aria-label="Help for antenna specifications">
+                            <span class="text-[14px] font-black leading-none">?</span>
+                        </button>
+                    </div>
+                </div>
+                <p class="text-sm text-slate-900">Provide the gain characteristics and environment effects for the
+                    antenna
+                    system.</p>
+            </div>
+
+            <div class="p-8 space-y-8">
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Antenna Description <span
+                            class="text-red-500">*</span></label>
+                    <input type="text" name="antenna_description"
+                           value="{{ form.antenna_description.value|default_if_none:'' }}"
+                           class="rf-form-control w-full px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 transition outline-none">
+                    <p class="text-[12px] mt-2 text-slate-600">
+                        Describe the specific antenna for this analysis (e.g., 3-Element Yagi @ 40ft)
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Antenna Gain <span
+                                class="text-red-500">*</span></label>
+                        <div class="flex items-center gap-3">
+                            <input type="number" step="0.1" name="antenna_gain"
+                                   value="{{ form.antenna_gain.value|default_if_none:'' }}"
+                                   class="rf-form-control flex-1 px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 transition outline-none">
+                            {#                        <span class="text-sm font-semibold text-slate-500">dBi</span>#}
+                        </div>
+                        <span class="block text-[12px] text-slate-500">Antenna Gain</span>
+                    </div>
+
+                    <label class="flex items-center p-4 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100 transition group">
+                        <input type="checkbox" name="ground_reflection"
+                               {% if form.ground_reflection.value %}checked{% endif %}
+                               class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500 border-slate-300 transition cursor-pointer">
+                        <div class="ml-4">
+                            <span class="block text-sm font-bold text-slate-800">Use Ground Reflection Effects</span>
+                            <span class="block text-[12px] text-slate-500">Integrates ground reflection for worst-case analysis</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- PANEL 4 -->
+        <section class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+            <div class="p-8 border-b border-slate-50 bg-slate-50/30">
+                <div class="flex items-start justify-between gap-4 mb-2">
+                    <div class="flex items-center space-x-3">
+                        <img src="{% static 'assets/img/transmission_icon.png' %}" alt="Transmission section icon"
+                             class="h-[72px] w-[72px] shrink-0 object-contain">
+                        <h2 class="text-2xl font-bold">Transmission Specifications</h2>
+                        <button type="button" data-help-target="transmission-specifications"
+                                class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#15446A] text-white shadow-sm transition hover:bg-[#103553] hover:shadow-md"
+                                aria-label="Help for transmission specifications">
+                            <span class="text-[14px] font-black leading-none">?</span>
+                        </button>
+                    </div>
+                </div>
+                <p class="text-sm text-slate-900">Accurate power and duty cycle values are critical for a correct
+                    exposure
+                    assessment.</p>
+            </div>
+
+            <div class="p-8">
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-10">
+                    <div class="w-full min-w-0 md:col-span-2">
+                        <label class="block text-sm font-semibold mb-2">Transmitter Power <span
+                                class="text-red-500">*</span></label>
+                        <div class="flex items-center gap-3">
+                            <input type="number" step="1" name="transmitter_power"
+                                   value="{{ form.effective_power.value|default_if_none:'' }}"
+                                   class="rf-form-control flex-1 min-w-0 px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 outline-none">
+                            {#                        <span class="text-xs font-semibold uppercase text-slate-500 tracking-wide">Watts</span>#}
+                        </div>
+                        <p class="mt-2 text-[12px] text-slate-600 font-medium">Set the PEP Input to Antenna in Watts</p>
+                    </div>
+
+                    <div class="w-full min-w-0 md:col-span-4">
+                        <label class="block text-sm font-semibold mb-2">Mode Duty Factor <span
+                                class="text-red-500">*</span></label>
+                        <div>
+                            <select name="duty_factor"
+                                    class="rf-form-control w-full min-w-0 px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 outline-none">
+                                {% for value, label in form.duty_factor.field.choices %}
+                                    <option value="{{ value }}"
+                                            {% if form.duty_factor.value|stringformat:"s" == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <p class="mt-2 text-[12px] text-slate-600 font-medium">Set the Mode Duty Factor</p>
+                    </div>
+
+
+                    <div class="w-full min-w-0 md:col-span-2">
+                        <label class="block text-sm font-semibold mb-2">Transmit Time <span
+                                class="text-red-500">*</span></label>
+                        <div class="flex items-center gap-3">
+                            <select name="tx_time"
+                                    class="rf-form-control flex-1 min-w-0 px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 outline-none text-sm">
+                                {% for value, label in form.transmit_time.field.choices %}
+                                    <option value="{{ value }}"
+                                            {% if form.transmit_time.value|stringformat:"s" == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            {#                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Mins</span>#}
+                        </div>
+                        <p class="mt-2 text-[12px] text-slate-600 font-medium">
+                            Set the transmit duration for each cycle in minutes.
+                        </p>
+                    </div>
+
+                    <div class="w-full min-w-0 md:col-span-2">
+                        <label class="block text-sm font-semibold mb-2">Receive Time <span
+                                class="text-red-500">*</span></label>
+                        <div class="flex items-center gap-3">
+                            <select name="rx_time"
+                                    class="rf-form-control flex-1 min-w-0 px-4 py-3 rounded-xl border border-slate-300 shadow-sm shadow-slate-900/5 bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 outline-none text-sm">
+                                {% for value, label in form.receive_time.field.choices %}
+                                    <option value="{{ value }}"
+                                            {% if form.receive_time.value|stringformat:"s" == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            {#                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Mins</span>#}
+                        </div>
+                        <p class="mt-2 text-[12px] text-slate-600 font-medium">
+                            Set the receive duration for each cycle in minutes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-[70rem] mx-auto mt-12 mb-20">
+            <div class="bg-slate-900 rounded-[2.5rem] p-1 shadow-2xl shadow-blue-900/20">
+                <div class="bg-slate-900 rounded-[2.2rem] border border-white/10 p-5 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+
+                    <div class="flex flex-col items-center text-center">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="mb-[20px] flex items-center gap-3">
+                                <h2 class="text-2xl font-bold text-white">Ready to Finalize Your RFExposure Report?</h2>
+                                <button type="button" data-help-target="finalize-report"
+                                        class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#15446A] text-white shadow-sm transition hover:bg-[#103553] hover:shadow-md"
+                                        aria-label="Help for finalizing report">
+                                    <span class="text-[14px] font-black leading-none">?</span>
+                                </button>
+                            </div>
+                            <div class="flex items-center justify-center space-x-3 group cursor-pointer">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="include_calculations"
+                                           {% if form.include_calculations.value %}checked{% endif %}
+                                           class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                                <span class="text-white font-medium group-hover:text-white transition-colors">
+                            Advanced Cloud Subscribers: Include Calculation Pages?
+                        </span>
+                            </div>
+                            <p class="text-white text-xs mt-4 font-bold text-center">
+                                This feature is available to Advanced Cloud Subscribers and appends a calculation report
+                                for each band or frequency computed.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="w-full md:w-auto">
+                        <button type="submit"
+                                class="w-full md:w-auto px-7 py-3 bg-blue-600 text-white font-black rounded-2xl
                                hover:bg-blue-500 hover:-translate-y-1 active:scale-95
                                transition-all duration-200 shadow-xl shadow-blue-900/40
                                uppercase tracking-widest flex items-center justify-center group text-sm">
-                    <span>Generate Report</span>
-                    <svg class="w-4 h-4 ml-2.5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                    </svg>
-                </button>
+                            <span>Generate Report</span>
+                            <svg class="w-4 h-4 ml-2.5 transform group-hover:translate-x-1 transition-transform"
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                      d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                </div>
             </div>
 
-        </div>
-    </div>
-
-    <p class="text-center mt-6 text-slate-600 text-[12px] leading-relaxed max-w-2xl mx-auto">
-        By clicking generate, your inputs will be processed using FCC OET Bulletin 65 standard algorithms.
-        Please verify all technical data before relying on the safety margins provided in the PDF output.
-    </p>
-</section>
+            <p class="text-center mt-6 text-slate-600 text-[12px] leading-relaxed max-w-2xl mx-auto">
+                By clicking generate, your inputs will be processed using FCC OET Bulletin 65 standard algorithms.
+                Please verify all technical data before relying on the safety margins provided in the PDF output.
+            </p>
+        </section>
 
     </form>
 
-<div id="help-modal" class="help-modal fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4 py-6">
-    <div class="w-full max-w-5xl overflow-hidden rounded-[2rem] bg-white shadow-2xl shadow-slate-950/30 ring-1 ring-slate-200">
-        <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-            <div>
-                <h3 class="text-lg font-bold text-slate-900">RF Exposure Help Application</h3>
-                <p class="text-sm text-slate-500">Navigate to the help section you need.</p>
+    <div id="help-modal"
+         class="help-modal fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4 py-6">
+        <div class="w-full max-w-5xl overflow-hidden rounded-[2rem] bg-white shadow-2xl shadow-slate-950/30">
+            <div class="flex items-center justify-between border-b border-blue-800 bg-blue-900 px-5 py-4">
+                <div>
+                    <h3 class="text-lg font-bold text-white">RFExposure Calculation Worksheet Help</h3>
+                    <p class="text-sm text-blue-200">Navigate to the help section you need.</p>
+                </div>
+                <button type="button"
+                        data-help-close
+                        class="inline-flex items-center justify-center rounded-full bg-blue-800 px-3 py-2 text-sm font-semibold text-white transition hover:bg-blue-700">
+                    Close
+                </button>
             </div>
-            <button type="button"
-                    data-help-close
-                    class="inline-flex items-center justify-center rounded-full bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200">
-                Close
-            </button>
+            <iframe id="help-frame" class="h-[75vh] w-full border-0" title="RF Exposure Help"></iframe>
         </div>
-        <iframe id="help-frame" class="h-[75vh] w-full border-0" title="RF Exposure Help"></iframe>
     </div>
-</div>
 
-<script>
-(() => {
-    const helpBaseUrl = "{% url 'compute:compute-help' %}";
-    const modal = document.getElementById('help-modal');
-    const frame = document.getElementById('help-frame');
-    const closeButton = document.querySelector('[data-help-close]');
-    const helpButtons = document.querySelectorAll('[data-help-target]');
+    <script>
+        (() => {
+            const helpBaseUrl = "{% url 'compute:compute-help' %}";
+            const modal = document.getElementById('help-modal');
+            const frame = document.getElementById('help-frame');
+            const closeButton = document.querySelector('[data-help-close]');
+            const helpButtons = document.querySelectorAll('[data-help-target]');
 
-    if (!modal || !frame || !closeButton || !helpButtons.length) {
-        return;
-    }
+            if (!modal || !frame || !closeButton || !helpButtons.length) {
+                return;
+            }
 
-    const openModal = (target) => {
-        frame.src = `${helpBaseUrl}#${target}`;
-        modal.classList.add('is-open');
-        document.body.classList.add('overflow-hidden');
-    };
+            const openModal = (target) => {
+                frame.src = `${helpBaseUrl}#${target}`;
+                modal.classList.add('is-open');
+                document.body.classList.add('overflow-hidden');
+            };
 
-    const closeModal = () => {
-        modal.classList.remove('is-open');
-        document.body.classList.remove('overflow-hidden');
-        frame.src = 'about:blank';
-    };
+            frame.addEventListener('load', () => {
+                try {
+                    const doc = frame.contentDocument || frame.contentWindow.document;
+                    const hash = frame.src.split('#')[1];
+                    if (hash) {
+                        const targetEl = doc.getElementById(hash);
+                        if (targetEl) {
+                            doc.documentElement.style.scrollBehavior = 'auto';
+                            doc.body.style.scrollBehavior = 'auto';
+                            targetEl.scrollIntoView({ block: 'start' });
+                        }
+                    }
+                } catch (e) {
+                    // Cross-origin fallback
+                }
+            });
 
-    helpButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-            openModal(button.getAttribute('data-help-target'));
-        });
-    });
+            const closeModal = () => {
+                modal.classList.remove('is-open');
+                document.body.classList.remove('overflow-hidden');
+                frame.src = 'about:blank';
+            };
 
-    closeButton.addEventListener('click', closeModal);
-    modal.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            closeModal();
-        }
-    });
+            helpButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    openModal(button.getAttribute('data-help-target'));
+                });
+            });
 
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && modal.classList.contains('is-open')) {
-            closeModal();
-        }
-    });
-})();
-</script>
+            closeButton.addEventListener('click', closeModal);
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && modal.classList.contains('is-open')) {
+                    closeModal();
+                }
+            });
+        })();
+    </script>
 
 {% endblock %}

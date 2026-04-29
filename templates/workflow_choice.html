@@ -14,8 +14,8 @@
                 Choose How to Start
             </h1>
             <p class="mx-auto mt-3 max-w-2xl text-lg leading-relaxed text-slate-600">
-                Registered users can sign in to save their individual RF exposure worksheet calculations.
-                Only need a single RF exposure report? Start with a basic report.
+                Registered users can sign in to save and download their individual RF exposure report.
+                If you only need a single RF exposure report, start with the "Basic" report.
             </p>
             <div class="mt-4 flex justify-center">
                 <a href="{% url 'instructions' %}"
@@ -28,11 +28,11 @@
         <main class="grid gap-6 md:grid-cols-2">
             <section class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/60">
                 <div class="mb-5 inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#15446A]">
-                    Account Dashboard
+                    RFExposure Account Dashboard
                 </div>
-                <h2 class="text-2xl font-bold text-slate-900">Save Reports to Account Dashboard</h2>
+                <h2 class="text-2xl font-bold text-slate-900">Generate and Save RF Exposure</h2>
                 <p class="mt-3 text-slate-600 leading-relaxed">
-                    Sign in to your account to save RF Exposure reports and return to them later from your account dashboard.
+                    Sign in to save and download RF exposure reports and return to them later from within account dashboard.
                 </p>
                 <div class="mt-6">
                     {% if user.is_authenticated %}
@@ -51,11 +51,11 @@
 
             <section class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/60">
                 <div class="mb-5 inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-600">
-                    Basic Report Generation
+                    Basic RF Exposure Report Generation
                 </div>
                 <h2 class="text-2xl font-bold text-slate-900">Generate Report and Download</h2>
                 <p class="mt-3 text-slate-600 leading-relaxed">
-                    Launch the RF Exposure Calculation Worksheet to generate and download a basic exposure report that is not saved.
+                    Launch the <b>RF Exposure Calculation Worksheet</b> to generate and download a basic, unsaved exposure report.
                 </p>
                 <div class="mt-6">
                     <a href="{% url 'compute:compute-form' %}"

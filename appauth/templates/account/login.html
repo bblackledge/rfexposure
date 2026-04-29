@@ -26,6 +26,12 @@
         border-color: #2563EB !important;
         box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.28), 0 2px 4px rgba(0, 0, 0, 0.03) !important;
     }
+
+    .error-message {
+        color: #DC2626;
+        font-weight: 700;
+        text-align: center;
+    }
 </style>
 {% endblock %}
 
@@ -44,7 +50,7 @@
 
         <form method="post" action="{% url 'appauth:account_login' %}" class="space-y-5">
             {% csrf_token %}
-            {{ form.non_field_errors }}
+            <span class="error-message">{{ form.non_field_errors }}</span>
             {% if redirect_field_value %}
                 <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
             {% endif %}

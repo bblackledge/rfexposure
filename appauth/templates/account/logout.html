@@ -8,7 +8,7 @@
     <div class="flex flex-col gap-3 sm:flex-row">
         <form method="post" action="{% url 'appauth:account_logout' %}" class="flex-1">
             {% csrf_token %}
-            <button type="submit" class="w-full rounded-2xl bg-slate-900 px-6 py-4 font-bold text-white hover:bg-blue-600">
+            <button type="submit" class="w-full rounded-2xl bg-slate-900 px-6 py-4 font-bold text-white hover:bg-[#800000]">
                 Log Out
             </button>
         </form>
